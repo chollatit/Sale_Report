@@ -44,6 +44,7 @@
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Windows.Forms.DataVisualization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -62,6 +63,90 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\Master\OEMPartGroupMS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Master\OEMPartGroupMS.Designer.cs">
+      <DependentUpon>OEMPartGroupMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Master\ShipToGroupMS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Master\ShipToGroupMS.Designer.cs">
+      <DependentUpon>ShipToGroupMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI10\AccumulateOverallForecast.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI10\AccumulateOverallForecast.Designer.cs">
+      <DependentUpon>AccumulateOverallForecast.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI11\AccumulateOEMForecast.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI11\AccumulateOEMForecast.Designer.cs">
+      <DependentUpon>AccumulateOEMForecast.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI12\AccumulateServicePartForecast.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI12\AccumulateServicePartForecast.Designer.cs">
+      <DependentUpon>AccumulateServicePartForecast.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI1\OverallMonthlySalesResult.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI1\OverallMonthlySalesResult.Designer.cs">
+      <DependentUpon>OverallMonthlySalesResult.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI2\MonthlyBreakdownByProjectOEM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI2\MonthlyBreakdownByProjectOEM.Designer.cs">
+      <DependentUpon>MonthlyBreakdownByProjectOEM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI3\MonthlyBreakdownByProjectServicePart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI3\MonthlyBreakdownByProjectServicePart.Designer.cs">
+      <DependentUpon>MonthlyBreakdownByProjectServicePart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI4\AccumulateSalesResultOverall.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI4\AccumulateSalesResultOverall.Designer.cs">
+      <DependentUpon>AccumulateSalesResultOverall.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI5\AccumulateSalesResultOEM.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI5\AccumulateSalesResultOEM.Designer.cs">
+      <DependentUpon>AccumulateSalesResultOEM.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI6\AccumulateSalesResultServicePart.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI6\AccumulateSalesResultServicePart.Designer.cs">
+      <DependentUpon>AccumulateSalesResultServicePart.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI7\OverallMonthlySalesForecast.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI7\OverallMonthlySalesForecast.Designer.cs">
+      <DependentUpon>OverallMonthlySalesForecast.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI8\BreakdownOEMForecast.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI8\BreakdownOEMForecast.Designer.cs">
+      <DependentUpon>BreakdownOEMForecast.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\UI9\ServicePartForecast.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\UI9\ServicePartForecast.Designer.cs">
+      <DependentUpon>ServicePartForecast.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
     </EmbeddedResource>
@@ -74,6 +159,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\Master\ShipToGroupMS.resx">
+      <DependentUpon>ShipToGroupMS.cs</DependentUpon>
+    </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -89,8 +177,8 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Model\" />
     <Folder Include="Template\" />
-    <Folder Include="View\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
