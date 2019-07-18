@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.masterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.groupShipToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.partGroupOEMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.overallMonthlySalesResultToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.monthlyBreakdownByProjectOEMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,9 +45,6 @@
             this.accumulateOverallForecastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.accumulateOEMForecastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.accumulateServicePartForecastToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.masterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.groupShipToToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.partGroupOEMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,6 +58,29 @@
             this.menuStrip1.Size = new System.Drawing.Size(884, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
+            // 
+            // masterToolStripMenuItem
+            // 
+            this.masterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.groupShipToToolStripMenuItem,
+            this.partGroupOEMToolStripMenuItem});
+            this.masterToolStripMenuItem.Name = "masterToolStripMenuItem";
+            this.masterToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
+            this.masterToolStripMenuItem.Text = "Master";
+            // 
+            // groupShipToToolStripMenuItem
+            // 
+            this.groupShipToToolStripMenuItem.Name = "groupShipToToolStripMenuItem";
+            this.groupShipToToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.groupShipToToolStripMenuItem.Text = "Ship To Group";
+            this.groupShipToToolStripMenuItem.Click += new System.EventHandler(this.groupShipToToolStripMenuItem_Click);
+            // 
+            // partGroupOEMToolStripMenuItem
+            // 
+            this.partGroupOEMToolStripMenuItem.Name = "partGroupOEMToolStripMenuItem";
+            this.partGroupOEMToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.partGroupOEMToolStripMenuItem.Text = "OEM Part Group";
+            this.partGroupOEMToolStripMenuItem.Click += new System.EventHandler(this.partGroupOEMToolStripMenuItem_Click);
             // 
             // reportToolStripMenuItem
             // 
@@ -150,33 +173,13 @@
             this.accumulateServicePartForecastToolStripMenuItem.Size = new System.Drawing.Size(321, 22);
             this.accumulateServicePartForecastToolStripMenuItem.Text = "12. Accumulate Service Part Forecast";
             // 
-            // masterToolStripMenuItem
-            // 
-            this.masterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.groupShipToToolStripMenuItem,
-            this.partGroupOEMToolStripMenuItem});
-            this.masterToolStripMenuItem.Name = "masterToolStripMenuItem";
-            this.masterToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
-            this.masterToolStripMenuItem.Text = "Master";
-            // 
-            // groupShipToToolStripMenuItem
-            // 
-            this.groupShipToToolStripMenuItem.Name = "groupShipToToolStripMenuItem";
-            this.groupShipToToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.groupShipToToolStripMenuItem.Text = "Ship To Group";
-            // 
-            // partGroupOEMToolStripMenuItem
-            // 
-            this.partGroupOEMToolStripMenuItem.Name = "partGroupOEMToolStripMenuItem";
-            this.partGroupOEMToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
-            this.partGroupOEMToolStripMenuItem.Text = "OEM Part Group";
-            // 
             // Main
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(884, 592);
             this.Controls.Add(this.menuStrip1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Main";

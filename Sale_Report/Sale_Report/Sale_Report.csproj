@@ -55,12 +55,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Help\Object.cs" />
     <Compile Include="Main.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\ConnectOracle.cs" />
+    <Compile Include="Model\OEMPartMS.cs" />
+    <Compile Include="Model\ShiptoMS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="View\Master\OEMPartGroupMS.cs">
@@ -159,6 +163,9 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\Master\OEMPartGroupMS.resx">
+      <DependentUpon>OEMPartGroupMS.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Master\ShipToGroupMS.resx">
       <DependentUpon>ShipToGroupMS.cs</DependentUpon>
     </EmbeddedResource>
@@ -177,7 +184,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Model\" />
     <Folder Include="Template\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
