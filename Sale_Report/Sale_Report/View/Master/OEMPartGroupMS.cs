@@ -15,11 +15,14 @@ namespace Sale_Report.View.Master
     {
         OEMPartMS oemPartms = new OEMPartMS();
 
+        DataSet dsOemPartList = null;
         string processCls = "";
+
         public OEMPartGroupMS()
         {
             InitializeComponent();
 
+            initDGVListOemPart();
             txtDateTime.Text = DateTime.Now.ToString();
             timer1.Start();
         }
@@ -29,17 +32,43 @@ namespace Sale_Report.View.Master
             txtDateTime.Text = DateTime.Now.ToString();
         }
 
+        private void initDGVListOemPart()
+        {
+            dsOemPartList = new DataSet();
+            dsOemPartList = oemPartms.selectOemPartList();
+
+            if (dsOemPartList == null)
+            {
+                MessageBox.Show("No data.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            else
+            {
+                dgvListOEMItemCD.DataSource = dsOemPartList.Tables[0];
+            }
+        }
+
+        private void clearTbxItem()
+        {
+            tbxItemCD.Text = "";
+            tbxItemDesc.Text = "";
+        }
+
         private void rdbAddShipto_CheckedChanged(object sender, EventArgs e)
         {
-            processCls = "add";
-            activeTbxItem(true);
-            tbxItemCD.Focus();
-            btnUpdate.Enabled = true;
+            if (rdbAddShipto.Checked)
+            {
+                processCls = "add";
+                activeTbxItem(true);
+                tbxItemCD.Focus();
+                btnUpdate.Enabled = true;
+            }
         }
 
         private void rdbDelShipto_CheckedChanged(object sender, EventArgs e)
         {
             processCls = "del";
+            activeTbxItem(false);
             btnUpdate.Enabled = true;
         }
 
@@ -103,7 +132,91 @@ namespace Sale_Report.View.Master
             string itemCD = tbxItemCD.Text;
             string itemDesc = tbxItemDesc.Text;
 
+            if (processCls == "add")
+            {
+                string strCmd = "trim(i_item_cd) = '" + itemCD + "'";
+                DataRow[] dr = dsOemPartList.Tables[0].Select(strCmd);
 
+                if (dr.Count() > 0)
+                {
+                    MessageBox.Show("This item cd already in list below.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+                else
+                {
+                    if (tbxItemDesc.Text.Count() > 0)
+                    {
+                        int result = oemPartms.insertOEMItem(itemCD, itemDesc);
+
+                        if (result > 0)
+                        {
+                            MessageBox.Show("Add complete.", "Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            clearTbxItem();
+                            tbxItemCD.Focus();
+                            initDGVListOemPart();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Add incomplete.", "Result", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Please input valid item cd.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        return;
+                    }
+                }
+            }
+            else if (processCls == "del")
+            {
+                DialogResult dialogResult = MessageBox.Show("Do you want to delete this item cd?", "Confirmation", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+                if (dialogResult == DialogResult.Yes)
+                {
+                    int result = oemPartms.deleteItemCD(itemCD);
+
+                    if (result > 0)
+                    {
+                        MessageBox.Show("Delete complete.", "Result", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        clearTbxItem();
+                        initDGVListOemPart();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Delete incomplete.", "Result", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        return;
+                    }
+                }
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            if (tbxItemCD.Text.Count() > 0)
+            {
+                clearTbxItem();
+                tbxItemCD.Enabled = false;
+            }
+            else if (processCls != "")
+            {
+                rdbAddShipto.Checked = false;
+                rdbDelShipto.Checked = false;
+                tbxItemCD.Enabled = false;
+                processCls = "";
+            }
+        }
+
+        private void dgvListOEMItemCD_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (processCls == "del")
+            {
+                string itemCD = dgvListOEMItemCD.Rows[e.RowIndex].Cells["i_item_cd"].Value.ToString();
+                string itemDesc = dgvListOEMItemCD.Rows[e.RowIndex].Cells["i_item_desc"].Value.ToString();
+
+                tbxItemCD.Text = itemCD;
+                tbxItemDesc.Text = itemDesc;
+            }
         }
     }
 }

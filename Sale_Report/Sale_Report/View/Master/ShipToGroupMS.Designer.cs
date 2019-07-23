@@ -57,6 +57,7 @@
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.dgvListShipto = new System.Windows.Forms.DataGridView();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.rdbOtherCls = new System.Windows.Forms.RadioButton();
             this.rdbPMSPCls = new System.Windows.Forms.RadioButton();
             this.rdbOEMCls = new System.Windows.Forms.RadioButton();
             this.bindingSource1 = new System.Windows.Forms.BindingSource(this.components);
@@ -329,20 +330,34 @@
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.rdbOtherCls);
             this.groupBox5.Controls.Add(this.rdbPMSPCls);
             this.groupBox5.Controls.Add(this.rdbOEMCls);
             this.groupBox5.Location = new System.Drawing.Point(187, 13);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(200, 56);
+            this.groupBox5.Size = new System.Drawing.Size(227, 56);
             this.groupBox5.TabIndex = 8;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Group Cls.";
+            // 
+            // rdbOtherCls
+            // 
+            this.rdbOtherCls.AutoSize = true;
+            this.rdbOtherCls.Enabled = false;
+            this.rdbOtherCls.Location = new System.Drawing.Point(149, 19);
+            this.rdbOtherCls.Name = "rdbOtherCls";
+            this.rdbOtherCls.Size = new System.Drawing.Size(51, 17);
+            this.rdbOtherCls.TabIndex = 3;
+            this.rdbOtherCls.TabStop = true;
+            this.rdbOtherCls.Text = "Other";
+            this.rdbOtherCls.UseVisualStyleBackColor = true;
+            this.rdbOtherCls.Click += new System.EventHandler(this.rdbOtherCls_Click);
             // 
             // rdbPMSPCls
             // 
             this.rdbPMSPCls.AutoSize = true;
             this.rdbPMSPCls.Enabled = false;
-            this.rdbPMSPCls.Location = new System.Drawing.Point(111, 19);
+            this.rdbPMSPCls.Location = new System.Drawing.Point(88, 19);
             this.rdbPMSPCls.Name = "rdbPMSPCls";
             this.rdbPMSPCls.Size = new System.Drawing.Size(55, 17);
             this.rdbPMSPCls.TabIndex = 1;
@@ -433,5 +448,6 @@
         private System.Windows.Forms.RadioButton rdbChgShipto;
         private System.Windows.Forms.BindingSource bindingSource1;
         private System.Windows.Forms.TextBox tbxShiptoCD;
+        private System.Windows.Forms.RadioButton rdbOtherCls;
     }
 }

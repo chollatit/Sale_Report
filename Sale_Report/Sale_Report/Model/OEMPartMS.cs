@@ -43,5 +43,35 @@ namespace Sale_Report.Model
                 return -1;
             }
         }
+
+        internal DataSet selectOemPartList()
+        {
+            try
+            {
+                string strCmd = "select * from T_IS_SALE_OEM_PART order by i_id";
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        internal int deleteItemCD(string itemCD)
+        {
+            try
+            {
+                string strCmd = "delete from T_IS_SALE_OEM_PART where trim(i_item_cd) = '" + itemCD + "'";
+                int result = obj.oracle.libOracle.ExecuteCommand(strCmd);
+
+                return result;
+            }
+            catch
+            {
+                return -1;
+            }
+        }
     }
 }

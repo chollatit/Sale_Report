@@ -44,6 +44,7 @@
             this.rdbChgShipto = new System.Windows.Forms.RadioButton();
             this.rdbAddShipto = new System.Windows.Forms.RadioButton();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tbxItemCD = new System.Windows.Forms.TextBox();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnUpdate = new System.Windows.Forms.Button();
             this.tbxItemDesc = new System.Windows.Forms.TextBox();
@@ -53,7 +54,6 @@
             this.label1 = new System.Windows.Forms.Label();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.dgvListOEMItemCD = new System.Windows.Forms.DataGridView();
-            this.tbxItemCD = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -192,6 +192,16 @@
             this.groupBox3.TabIndex = 7;
             this.groupBox3.TabStop = false;
             // 
+            // tbxItemCD
+            // 
+            this.tbxItemCD.Enabled = false;
+            this.tbxItemCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.tbxItemCD.Location = new System.Drawing.Point(145, 20);
+            this.tbxItemCD.Name = "tbxItemCD";
+            this.tbxItemCD.Size = new System.Drawing.Size(153, 22);
+            this.tbxItemCD.TabIndex = 7;
+            this.tbxItemCD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbxItemCD_KeyDown);
+            // 
             // btnCancel
             // 
             this.btnCancel.Location = new System.Drawing.Point(613, 76);
@@ -200,6 +210,7 @@
             this.btnCancel.TabIndex = 5;
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
+            this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
             // btnUpdate
             // 
@@ -282,16 +293,7 @@
             this.dgvListOEMItemCD.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvListOEMItemCD.Size = new System.Drawing.Size(689, 295);
             this.dgvListOEMItemCD.TabIndex = 0;
-            // 
-            // tbxItemCD
-            // 
-            this.tbxItemCD.Enabled = false;
-            this.tbxItemCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.tbxItemCD.Location = new System.Drawing.Point(145, 20);
-            this.tbxItemCD.Name = "tbxItemCD";
-            this.tbxItemCD.Size = new System.Drawing.Size(153, 22);
-            this.tbxItemCD.TabIndex = 7;
-            this.tbxItemCD.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbxItemCD_KeyDown);
+            this.dgvListOEMItemCD.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvListOEMItemCD_CellDoubleClick);
             // 
             // OEMPartGroupMS
             // 

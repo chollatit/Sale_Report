@@ -41,6 +41,7 @@ namespace Sale_Report.View.Master
         {
             rdbOEMCls.Enabled = flg;
             rdbPMSPCls.Enabled = flg;
+            rdbOtherCls.Enabled = flg;
         }
 
         private void activeShiptoCD(bool flg)
@@ -86,6 +87,13 @@ namespace Sale_Report.View.Master
         private void rdbPMSPCls_Click(object sender, EventArgs e)
         {
             groupCls = "pmsp";
+            activeShiptoCD(true);
+            activeUpdateBtn(true);
+        }
+
+        private void rdbOtherCls_Click(object sender, EventArgs e)
+        {
+            groupCls = "other";
             activeShiptoCD(true);
             activeUpdateBtn(true);
         }
@@ -165,6 +173,8 @@ namespace Sale_Report.View.Master
                         string strGroupCD = "";
                         if (groupCls == "oem") strGroupCD = "01";
                         else if (groupCls == "pmsp") strGroupCD = "02";
+                        else if (groupCls == "oem service") strGroupCD = "03";
+                        else if (groupCls == "other") strGroupCD = "04";
 
                         int result = shiptoms.insertShiptoMS(strGroupCD, groupCls.ToUpper(), strShiptoCD, strShiptoDesc);
                         if (result > 0)
@@ -283,6 +293,8 @@ namespace Sale_Report.View.Master
                 tbxShiptoDesc.Text = shiptoDesc;
             }
         }
+
+        
 
     }
 }
