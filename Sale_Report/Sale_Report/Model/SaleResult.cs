@@ -10,13 +10,13 @@ namespace Sale_Report.Model
 {
     class SaleResult
     {
-        Sale_Report.Help.Object obj = new Sale_Report.Help.Object();
+        public Sale_Report.Help.Object obj = new Sale_Report.Help.Object();
 
         internal DataSet selectOverAllActual(string yearMonth, string groupDesc)
         {
             try
             {
-                string strCmd = "SELECT   TO_CHAR (ta.i_ship_date, 'yyyymm') AS MONTH, ";
+                string strCmd = "SELECT  '" + groupDesc + "' as groupdesc, TO_CHAR (ta.i_ship_date, 'yyyymm') AS MONTH, ";
                 strCmd += "SUM (ta.i_amt) AS i_amt_sale ";
                 strCmd += "FROM t_ship_tr ta ";
                 strCmd += "WHERE TO_CHAR (ta.i_ship_date, 'yyyymm') = '" + yearMonth + "' ";
@@ -40,7 +40,7 @@ namespace Sale_Report.Model
         {
             try
             {
-                string strCmd = "SELECT   ta.i_frst_year_mnth, ";
+                string strCmd = "SELECT  'PMSP' as groupdesc, ta.i_frst_year_mnth, ";
                 strCmd += "SUM ";
                 strCmd += "(  ta.i_mnth_frst_so_qty ";
                 strCmd += "* (SELECT CASE ";
@@ -66,11 +66,11 @@ namespace Sale_Report.Model
             }
         }
 
-        internal DataSet selectOverAllForecast(string yearMonth)
+        internal DataSet selectOverAllForecast(string yearMonth, string groupDesc)
         {
             try
             {
-                string strCmd = "SELECT   ta.i_frst_year_mnth, ";
+                string strCmd = "SELECT '" + groupDesc + "' as groupdesc,  ta.i_frst_year_mnth, ";
                 strCmd += "SUM (  ta.i_mnth_frst_so_qty ";
                 strCmd += "* (  tb.i_rm_cst ";
                 strCmd += "+ tb.i_pur_item_cst1 ";
@@ -100,7 +100,7 @@ namespace Sale_Report.Model
                 strCmd += "WHERE ta.i_frst_year_mnth = '" + yearMonth + "' ";
                 strCmd += "AND TRIM (ta.i_del_dest_cd) IN (SELECT tc.i_shipto_cd ";
                 strCmd += "FROM t_is_sale_shipto_ms tc ";
-                strCmd += "WHERE tc.i_group_desc = 'OEM') ";
+                strCmd += "WHERE tc.i_group_desc = '" + groupDesc + "') ";
                 strCmd += "GROUP BY ta.i_frst_year_mnth";
 
                 DataSet ds = obj.oracle.libOracle.GetData(strCmd);

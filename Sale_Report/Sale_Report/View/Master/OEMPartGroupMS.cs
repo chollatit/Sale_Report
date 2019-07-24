@@ -22,6 +22,7 @@ namespace Sale_Report.View.Master
         {
             InitializeComponent();
 
+            txtNameSchema.Text = "SCHEMA : " + oemPartms.obj.oracle.User;
             initDGVListOemPart();
             txtDateTime.Text = DateTime.Now.ToString();
             timer1.Start();

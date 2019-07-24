@@ -10,7 +10,7 @@ namespace Sale_Report.Model
 {
     class ShiptoMS
     {
-        Sale_Report.Help.Object obj = new Sale_Report.Help.Object();
+        public Sale_Report.Help.Object obj = new Sale_Report.Help.Object();
 
         internal DataSet selectShiptoMS()
         {

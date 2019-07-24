@@ -64,9 +64,16 @@
     </Compile>
     <Compile Include="Model\ConnectOracle.cs" />
     <Compile Include="Model\OEMPartMS.cs" />
+    <Compile Include="Model\SaleResult.cs" />
     <Compile Include="Model\ShiptoMS.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="View\Loding\Frm_Loading.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Loding\Frm_Loading.designer.cs">
+      <DependentUpon>Frm_Loading.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Master\OEMPartGroupMS.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -78,6 +85,12 @@
     </Compile>
     <Compile Include="View\Master\ShipToGroupMS.Designer.cs">
       <DependentUpon>ShipToGroupMS.cs</DependentUpon>
+    </Compile>
+    <Compile Include="View\Report\SummarySaleReports.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Report\SummarySaleReports.Designer.cs">
+      <DependentUpon>SummarySaleReports.cs</DependentUpon>
     </Compile>
     <Compile Include="View\UI10\AccumulateOverallForecast.cs">
       <SubType>Form</SubType>
@@ -163,11 +176,17 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="View\Loding\Frm_Loading.resx">
+      <DependentUpon>Frm_Loading.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="View\Master\OEMPartGroupMS.resx">
       <DependentUpon>OEMPartGroupMS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Master\ShipToGroupMS.resx">
       <DependentUpon>ShipToGroupMS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Report\SummarySaleReports.resx">
+      <DependentUpon>SummarySaleReports.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -179,13 +198,14 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Template\Template-Sale-Report.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Template\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

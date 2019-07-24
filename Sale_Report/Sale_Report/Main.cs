@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Sale_Report.View.Master;
+using Sale_Report.View.Report;
 
 namespace Sale_Report
 {
@@ -40,6 +41,18 @@ namespace Sale_Report
             oemPart.Show();
             oemPart.WindowState = FormWindowState.Minimized;
             oemPart.WindowState = FormWindowState.Maximized;
+        }
+
+        private void summarySaleReportsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.MdiChildren.Count() > 0)
+                this.ActiveMdiChild.Close();
+
+            SummarySaleReports summarySaleReport = new SummarySaleReports();
+            summarySaleReport.MdiParent = this;
+            summarySaleReport.Show();
+            summarySaleReport.WindowState = FormWindowState.Minimized;
+            summarySaleReport.WindowState = FormWindowState.Maximized;
         }
     }
 }

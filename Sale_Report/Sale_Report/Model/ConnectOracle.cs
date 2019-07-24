@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConnectOracle_lib;
+using Sale_Report.View.Loading;
 
 namespace Sale_Report.Model
 {
@@ -15,6 +16,7 @@ namespace Sale_Report.Model
         public string Host = "PRONES";
         public string User = "TCT";
         public string Password = "TCT";
+        public Frm_Loading frmLoad;
 
         public ConnectOracle()
         {

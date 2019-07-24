@@ -26,6 +26,8 @@ namespace Sale_Report.View.Master
         {
             InitializeComponent();
 
+            txtNameSchema.Text = "SCHEMA : " + shiptoms.obj.oracle.User;
+
             txtDateTime.Text = DateTime.Now.ToString();
             timer1.Start();
 
