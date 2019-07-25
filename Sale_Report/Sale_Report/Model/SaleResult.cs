@@ -112,5 +112,90 @@ namespace Sale_Report.Model
                 return null;
             }
         }
+
+        internal DataSet selectProjectOEMActual(string yearMonth, string groupDesc, string projectDesc)
+        {
+            try
+            {
+                string strCmd = "SELECT   '" + projectDesc + "' AS projectdesc, TO_CHAR (ta.i_ship_date, 'yyyymm') AS MONTH, ";
+                strCmd += "SUM (ta.i_amt) AS i_amt_sale ";
+                strCmd += "FROM t_ship_tr ta INNER JOIN t_pm_ms tc ";
+                strCmd += "ON ta.i_item_cd = tc.i_item_cd ";
+                strCmd += "AND TRIM (tc.i_item_type3) IN ('PJ05', 'PJ08') ";
+                strCmd += "WHERE TO_CHAR (ta.i_ship_date, 'yyyymm') = '" + yearMonth + "' ";
+                strCmd += "AND TRIM (ta.i_del_dest_cd) IN (SELECT tb.i_shipto_cd ";
+                strCmd += "FROM t_is_sale_shipto_ms tb ";
+                strCmd += "WHERE tb.i_group_desc = '" + groupDesc + "') ";
+                strCmd += "AND ta.i_inv_no IS NOT NULL ";
+                strCmd += "GROUP BY TO_CHAR (ta.i_ship_date, 'yyyymm')";
+
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        internal DataSet selectProjectOEMOtherActual(string yearMonth)
+        {
+            try
+            {
+                string strCmd = "SELECT   'OTHER' AS projectdesc, TO_CHAR (ta.i_ship_date, 'yyyymm') AS MONTH, ";
+                strCmd += "SUM (ta.i_amt) AS i_amt_sale ";
+                strCmd += "FROM t_ship_tr ta ";
+                strCmd += "WHERE TO_CHAR (ta.i_ship_date, 'yyyymm') = '" + yearMonth + "' ";
+                strCmd += "AND TRIM (ta.i_del_dest_cd) IN (SELECT tb.i_shipto_cd ";
+                strCmd += "FROM t_is_sale_shipto_ms tb ";
+                strCmd += "WHERE tb.i_group_desc = 'OTHER') ";
+                strCmd += "AND ta.i_inv_no IS NOT NULL ";
+                strCmd += "GROUP BY TO_CHAR (ta.i_ship_date, 'yyyymm')";
+
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        internal DataSet selectProjectOEMOEMPartActual(string yearMonth)
+        {
+            try
+            {
+                string strCmd = "SELECT   'OEM' AS projectdesc, TO_CHAR (ta.i_ship_date, 'yyyymm') AS MONTH, ";
+                strCmd += "SUM (ta.i_amt) AS i_amt_sale ";
+                strCmd += "FROM t_ship_tr ta ";
+                strCmd += "WHERE TO_CHAR (ta.i_ship_date, 'yyyymm') = '" + yearMonth + "' ";
+                strCmd += "AND TRIM (ta.i_item_cd) IN (SELECT TRIM (tb.i_item_cd) ";
+                strCmd += "FROM t_is_sale_oem_part tb) ";
+                strCmd += "AND ta.i_inv_no IS NOT NULL ";
+                strCmd += "GROUP BY TO_CHAR (ta.i_ship_date, 'yyyymm')";
+
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        internal DataSet selectProjectOEMNCDataActual(string yearMonth)
+        {
+            try
+            {
+                string strCmd = "";
+
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

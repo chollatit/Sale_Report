@@ -40,19 +40,19 @@
             this.txtNameSchema = new System.Windows.Forms.ToolStripLabel();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnExport = new System.Windows.Forms.Button();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.dtpYearMonth = new System.Windows.Forms.DateTimePicker();
             this.panel1 = new System.Windows.Forms.Panel();
             this.Month = new System.Windows.Forms.Label();
-            this.dtpYearMonth = new System.Windows.Forms.DateTimePicker();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.btnSearch = new System.Windows.Forms.Button();
-            this.btnExport = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvSearchResult = new System.Windows.Forms.DataGridView();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.toolStrip1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchResult)).BeginInit();
             this.SuspendLayout();
@@ -140,6 +140,49 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Search";
             // 
+            // btnExport
+            // 
+            this.btnExport.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.btnExport.Location = new System.Drawing.Point(738, 19);
+            this.btnExport.Name = "btnExport";
+            this.btnExport.Size = new System.Drawing.Size(83, 41);
+            this.btnExport.TabIndex = 4;
+            this.btnExport.Text = "Export";
+            this.btnExport.UseVisualStyleBackColor = true;
+            this.btnExport.Click += new System.EventHandler(this.btnExport_Click);
+            // 
+            // btnSearch
+            // 
+            this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.btnSearch.Location = new System.Drawing.Point(647, 19);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(85, 41);
+            this.btnSearch.TabIndex = 3;
+            this.btnSearch.Text = "Search";
+            this.btnSearch.UseVisualStyleBackColor = true;
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            // 
+            // panel2
+            // 
+            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.panel2.Controls.Add(this.dtpYearMonth);
+            this.panel2.Location = new System.Drawing.Point(153, 20);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(230, 40);
+            this.panel2.TabIndex = 2;
+            // 
+            // dtpYearMonth
+            // 
+            this.dtpYearMonth.CustomFormat = "MMM yyyy";
+            this.dtpYearMonth.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
+            this.dtpYearMonth.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
+            this.dtpYearMonth.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.dtpYearMonth.Location = new System.Drawing.Point(12, 5);
+            this.dtpYearMonth.Name = "dtpYearMonth";
+            this.dtpYearMonth.ShowUpDown = true;
+            this.dtpYearMonth.Size = new System.Drawing.Size(200, 29);
+            this.dtpYearMonth.TabIndex = 1;
+            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ActiveBorder;
@@ -158,48 +201,6 @@
             this.Month.Size = new System.Drawing.Size(68, 24);
             this.Month.TabIndex = 0;
             this.Month.Text = "Month:";
-            // 
-            // dtpYearMonth
-            // 
-            this.dtpYearMonth.CustomFormat = "MMM yyyy";
-            this.dtpYearMonth.DropDownAlign = System.Windows.Forms.LeftRightAlignment.Right;
-            this.dtpYearMonth.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.dtpYearMonth.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.dtpYearMonth.Location = new System.Drawing.Point(12, 5);
-            this.dtpYearMonth.Name = "dtpYearMonth";
-            this.dtpYearMonth.ShowUpDown = true;
-            this.dtpYearMonth.Size = new System.Drawing.Size(200, 29);
-            this.dtpYearMonth.TabIndex = 1;
-            // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.panel2.Controls.Add(this.dtpYearMonth);
-            this.panel2.Location = new System.Drawing.Point(153, 20);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(230, 40);
-            this.panel2.TabIndex = 2;
-            // 
-            // btnSearch
-            // 
-            this.btnSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.btnSearch.Location = new System.Drawing.Point(647, 19);
-            this.btnSearch.Name = "btnSearch";
-            this.btnSearch.Size = new System.Drawing.Size(85, 41);
-            this.btnSearch.TabIndex = 3;
-            this.btnSearch.Text = "Search";
-            this.btnSearch.UseVisualStyleBackColor = true;
-            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
-            // 
-            // btnExport
-            // 
-            this.btnExport.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.btnExport.Location = new System.Drawing.Point(738, 19);
-            this.btnExport.Name = "btnExport";
-            this.btnExport.Size = new System.Drawing.Size(83, 41);
-            this.btnExport.TabIndex = 4;
-            this.btnExport.Text = "Export";
-            this.btnExport.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -244,9 +245,9 @@
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvSearchResult)).EndInit();
             this.ResumeLayout(false);
