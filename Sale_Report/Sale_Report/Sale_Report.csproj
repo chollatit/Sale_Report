@@ -62,9 +62,11 @@
     <Compile Include="Main.Designer.cs">
       <DependentUpon>Main.cs</DependentUpon>
     </Compile>
+    <Compile Include="Model\AccumulateForecast.cs" />
     <Compile Include="Model\AccumulateResult.cs" />
     <Compile Include="Model\ConnectOracle.cs" />
     <Compile Include="Model\OEMPartMS.cs" />
+    <Compile Include="Model\SaleForecast.cs" />
     <Compile Include="Model\SaleResult.cs" />
     <Compile Include="Model\ShiptoMS.cs" />
     <Compile Include="Program.cs" />
