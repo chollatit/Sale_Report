@@ -138,7 +138,7 @@
             this.groupBox1.Controls.Add(this.rdbDelShipto);
             this.groupBox1.Controls.Add(this.rdbChgShipto);
             this.groupBox1.Controls.Add(this.rdbAddShipto);
-            this.groupBox1.Location = new System.Drawing.Point(12, 12);
+            this.groupBox1.Location = new System.Drawing.Point(12, 10);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(168, 57);
             this.groupBox1.TabIndex = 6;
@@ -148,7 +148,7 @@
             // rdbDelShipto
             // 
             this.rdbDelShipto.AutoSize = true;
-            this.rdbDelShipto.Location = new System.Drawing.Point(114, 20);
+            this.rdbDelShipto.Location = new System.Drawing.Point(114, 18);
             this.rdbDelShipto.Name = "rdbDelShipto";
             this.rdbDelShipto.Size = new System.Drawing.Size(41, 17);
             this.rdbDelShipto.TabIndex = 2;
@@ -160,7 +160,7 @@
             // 
             this.rdbChgShipto.AutoSize = true;
             this.rdbChgShipto.Enabled = false;
-            this.rdbChgShipto.Location = new System.Drawing.Point(63, 20);
+            this.rdbChgShipto.Location = new System.Drawing.Point(63, 18);
             this.rdbChgShipto.Name = "rdbChgShipto";
             this.rdbChgShipto.Size = new System.Drawing.Size(44, 17);
             this.rdbChgShipto.TabIndex = 1;
@@ -170,7 +170,7 @@
             // rdbAddShipto
             // 
             this.rdbAddShipto.AutoSize = true;
-            this.rdbAddShipto.Location = new System.Drawing.Point(12, 20);
+            this.rdbAddShipto.Location = new System.Drawing.Point(12, 18);
             this.rdbAddShipto.Name = "rdbAddShipto";
             this.rdbAddShipto.Size = new System.Drawing.Size(44, 17);
             this.rdbAddShipto.TabIndex = 0;
@@ -186,7 +186,7 @@
             this.groupBox3.Controls.Add(this.tbxItemDesc);
             this.groupBox3.Controls.Add(this.panel2);
             this.groupBox3.Controls.Add(this.panel1);
-            this.groupBox3.Location = new System.Drawing.Point(12, 75);
+            this.groupBox3.Location = new System.Drawing.Point(12, 73);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(694, 116);
             this.groupBox3.TabIndex = 7;
@@ -196,7 +196,7 @@
             // 
             this.tbxItemCD.Enabled = false;
             this.tbxItemCD.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.tbxItemCD.Location = new System.Drawing.Point(145, 20);
+            this.tbxItemCD.Location = new System.Drawing.Point(145, 18);
             this.tbxItemCD.Name = "tbxItemCD";
             this.tbxItemCD.Size = new System.Drawing.Size(153, 22);
             this.tbxItemCD.TabIndex = 7;
@@ -204,7 +204,7 @@
             // 
             // btnCancel
             // 
-            this.btnCancel.Location = new System.Drawing.Point(613, 76);
+            this.btnCancel.Location = new System.Drawing.Point(613, 74);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(75, 23);
             this.btnCancel.TabIndex = 5;
@@ -215,7 +215,7 @@
             // btnUpdate
             // 
             this.btnUpdate.Enabled = false;
-            this.btnUpdate.Location = new System.Drawing.Point(532, 76);
+            this.btnUpdate.Location = new System.Drawing.Point(532, 74);
             this.btnUpdate.Name = "btnUpdate";
             this.btnUpdate.Size = new System.Drawing.Size(75, 23);
             this.btnUpdate.TabIndex = 4;
@@ -227,7 +227,7 @@
             // 
             this.tbxItemDesc.Enabled = false;
             this.tbxItemDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.tbxItemDesc.Location = new System.Drawing.Point(145, 48);
+            this.tbxItemDesc.Location = new System.Drawing.Point(145, 46);
             this.tbxItemDesc.Name = "tbxItemDesc";
             this.tbxItemDesc.Size = new System.Drawing.Size(543, 22);
             this.tbxItemDesc.TabIndex = 3;
@@ -236,7 +236,7 @@
             // 
             this.panel2.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel2.Controls.Add(this.label2);
-            this.panel2.Location = new System.Drawing.Point(7, 48);
+            this.panel2.Location = new System.Drawing.Point(7, 46);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(132, 22);
             this.panel2.TabIndex = 2;
@@ -245,7 +245,7 @@
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.label2.Location = new System.Drawing.Point(58, 3);
+            this.label2.Location = new System.Drawing.Point(58, 1);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(71, 16);
             this.label2.TabIndex = 0;
@@ -255,7 +255,7 @@
             // 
             this.panel1.BackColor = System.Drawing.SystemColors.ControlDark;
             this.panel1.Controls.Add(this.label1);
-            this.panel1.Location = new System.Drawing.Point(7, 20);
+            this.panel1.Location = new System.Drawing.Point(7, 18);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(132, 22);
             this.panel1.TabIndex = 0;
@@ -264,7 +264,7 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(222)));
-            this.label1.Location = new System.Drawing.Point(74, 3);
+            this.label1.Location = new System.Drawing.Point(74, 1);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(55, 16);
             this.label1.TabIndex = 0;
@@ -273,7 +273,7 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.dgvListOEMItemCD);
-            this.groupBox4.Location = new System.Drawing.Point(12, 197);
+            this.groupBox4.Location = new System.Drawing.Point(12, 195);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(695, 314);
             this.groupBox4.TabIndex = 8;

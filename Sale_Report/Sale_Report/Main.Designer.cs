@@ -34,6 +34,7 @@
             this.partGroupOEMToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.reportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.summarySaleReportsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.oEMServicePartGroupToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -52,7 +53,8 @@
             // 
             this.masterToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.groupShipToToolStripMenuItem,
-            this.partGroupOEMToolStripMenuItem});
+            this.partGroupOEMToolStripMenuItem,
+            this.oEMServicePartGroupToolStripMenuItem});
             this.masterToolStripMenuItem.Name = "masterToolStripMenuItem";
             this.masterToolStripMenuItem.Size = new System.Drawing.Size(55, 20);
             this.masterToolStripMenuItem.Text = "Master";
@@ -60,14 +62,14 @@
             // groupShipToToolStripMenuItem
             // 
             this.groupShipToToolStripMenuItem.Name = "groupShipToToolStripMenuItem";
-            this.groupShipToToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.groupShipToToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.groupShipToToolStripMenuItem.Text = "Ship To Group";
             this.groupShipToToolStripMenuItem.Click += new System.EventHandler(this.groupShipToToolStripMenuItem_Click);
             // 
             // partGroupOEMToolStripMenuItem
             // 
             this.partGroupOEMToolStripMenuItem.Name = "partGroupOEMToolStripMenuItem";
-            this.partGroupOEMToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.partGroupOEMToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
             this.partGroupOEMToolStripMenuItem.Text = "OEM Part Group";
             this.partGroupOEMToolStripMenuItem.Click += new System.EventHandler(this.partGroupOEMToolStripMenuItem_Click);
             // 
@@ -82,9 +84,16 @@
             // summarySaleReportsToolStripMenuItem
             // 
             this.summarySaleReportsToolStripMenuItem.Name = "summarySaleReportsToolStripMenuItem";
-            this.summarySaleReportsToolStripMenuItem.Size = new System.Drawing.Size(321, 22);
+            this.summarySaleReportsToolStripMenuItem.Size = new System.Drawing.Size(192, 22);
             this.summarySaleReportsToolStripMenuItem.Text = "Summary Sale Reports";
             this.summarySaleReportsToolStripMenuItem.Click += new System.EventHandler(this.summarySaleReportsToolStripMenuItem_Click);
+            // 
+            // oEMServicePartGroupToolStripMenuItem
+            // 
+            this.oEMServicePartGroupToolStripMenuItem.Name = "oEMServicePartGroupToolStripMenuItem";
+            this.oEMServicePartGroupToolStripMenuItem.Size = new System.Drawing.Size(200, 22);
+            this.oEMServicePartGroupToolStripMenuItem.Text = "OEM Service Part Group";
+            this.oEMServicePartGroupToolStripMenuItem.Click += new System.EventHandler(this.oEMServicePartGroupToolStripMenuItem_Click);
             // 
             // Main
             // 
@@ -113,6 +122,7 @@
         private System.Windows.Forms.ToolStripMenuItem groupShipToToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem partGroupOEMToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem summarySaleReportsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem oEMServicePartGroupToolStripMenuItem;
     }
 }
 

@@ -54,5 +54,17 @@ namespace Sale_Report
             summarySaleReport.WindowState = FormWindowState.Minimized;
             summarySaleReport.WindowState = FormWindowState.Maximized;
         }
+
+        private void oEMServicePartGroupToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (this.MdiChildren.Count() > 0)
+                this.ActiveMdiChild.Close();
+
+            OEMServicePartGroupMS oemPart = new OEMServicePartGroupMS();
+            oemPart.MdiParent = this;
+            oemPart.Show();
+            oemPart.WindowState = FormWindowState.Minimized;
+            oemPart.WindowState = FormWindowState.Maximized;
+        }
     }
 }

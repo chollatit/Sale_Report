@@ -66,6 +66,7 @@
     <Compile Include="Model\AccumulateResult.cs" />
     <Compile Include="Model\ConnectOracle.cs" />
     <Compile Include="Model\OEMPartMS.cs" />
+    <Compile Include="Model\OEMServicePartMS.cs" />
     <Compile Include="Model\SaleForecast.cs" />
     <Compile Include="Model\SaleResult.cs" />
     <Compile Include="Model\ShiptoMS.cs" />
@@ -83,6 +84,12 @@
     <Compile Include="View\Master\OEMPartGroupMS.Designer.cs">
       <DependentUpon>OEMPartGroupMS.cs</DependentUpon>
     </Compile>
+    <Compile Include="View\Master\OEMServicePartGroupMS.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Master\OEMServicePartGroupMS.Designer.cs">
+      <DependentUpon>OEMServicePartGroupMS.cs</DependentUpon>
+    </Compile>
     <Compile Include="View\Master\ShipToGroupMS.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,78 +101,6 @@
     </Compile>
     <Compile Include="View\Report\SummarySaleReports.Designer.cs">
       <DependentUpon>SummarySaleReports.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI10\AccumulateOverallForecast.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI10\AccumulateOverallForecast.Designer.cs">
-      <DependentUpon>AccumulateOverallForecast.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI11\AccumulateOEMForecast.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI11\AccumulateOEMForecast.Designer.cs">
-      <DependentUpon>AccumulateOEMForecast.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI12\AccumulateServicePartForecast.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI12\AccumulateServicePartForecast.Designer.cs">
-      <DependentUpon>AccumulateServicePartForecast.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI1\OverallMonthlySalesResult.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI1\OverallMonthlySalesResult.Designer.cs">
-      <DependentUpon>OverallMonthlySalesResult.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI2\MonthlyBreakdownByProjectOEM.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI2\MonthlyBreakdownByProjectOEM.Designer.cs">
-      <DependentUpon>MonthlyBreakdownByProjectOEM.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI3\MonthlyBreakdownByProjectServicePart.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI3\MonthlyBreakdownByProjectServicePart.Designer.cs">
-      <DependentUpon>MonthlyBreakdownByProjectServicePart.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI4\AccumulateSalesResultOverall.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI4\AccumulateSalesResultOverall.Designer.cs">
-      <DependentUpon>AccumulateSalesResultOverall.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI5\AccumulateSalesResultOEM.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI5\AccumulateSalesResultOEM.Designer.cs">
-      <DependentUpon>AccumulateSalesResultOEM.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI6\AccumulateSalesResultServicePart.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI6\AccumulateSalesResultServicePart.Designer.cs">
-      <DependentUpon>AccumulateSalesResultServicePart.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI7\OverallMonthlySalesForecast.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI7\OverallMonthlySalesForecast.Designer.cs">
-      <DependentUpon>OverallMonthlySalesForecast.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI8\BreakdownOEMForecast.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI8\BreakdownOEMForecast.Designer.cs">
-      <DependentUpon>BreakdownOEMForecast.cs</DependentUpon>
-    </Compile>
-    <Compile Include="View\UI9\ServicePartForecast.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="View\UI9\ServicePartForecast.Designer.cs">
-      <DependentUpon>ServicePartForecast.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="Main.resx">
       <DependentUpon>Main.cs</DependentUpon>
@@ -184,6 +119,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="View\Master\OEMPartGroupMS.resx">
       <DependentUpon>OEMPartGroupMS.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Master\OEMServicePartGroupMS.resx">
+      <DependentUpon>OEMServicePartGroupMS.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Master\ShipToGroupMS.resx">
       <DependentUpon>ShipToGroupMS.cs</DependentUpon>
