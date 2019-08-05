@@ -179,7 +179,6 @@
             this.dtpYearMonth.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.dtpYearMonth.Location = new System.Drawing.Point(12, 5);
             this.dtpYearMonth.Name = "dtpYearMonth";
-            this.dtpYearMonth.ShowUpDown = true;
             this.dtpYearMonth.Size = new System.Drawing.Size(200, 29);
             this.dtpYearMonth.TabIndex = 1;
             // 
@@ -227,7 +226,9 @@
             // 
             // backgroundWorker1
             // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
             this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
             // 
             // SummarySaleReports

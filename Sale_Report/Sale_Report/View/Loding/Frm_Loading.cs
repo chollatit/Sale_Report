@@ -31,5 +31,10 @@ namespace Sale_Report.View.Loading
         {
             this.ControlBox = false;
         }
+
+        public void updateStatus(string strStatus)
+        {
+            lblStatus.Text = strStatus;
+        }
     }
 }

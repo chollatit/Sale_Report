@@ -113,6 +113,68 @@ namespace Sale_Report.Model
             }
         }
 
+        internal DataSet selectMonthlyOAP(string year, string type)
+        {
+            try
+            {
+                string strCmd = "SELECT ta.i_year_mnth, ta.i_item_cd, ta.i_mnth_plan_qty1, ta.i_mnth_plan_qty2, ";
+                strCmd += "ta.i_mnth_plan_qty3, ta.i_mnth_plan_qty4, ta.i_mnth_plan_qty5, ";
+                strCmd += "ta.i_mnth_plan_qty6, ta.i_mnth_plan_qty7, ta.i_mnth_plan_qty8, ";
+                strCmd += "ta.i_mnth_plan_qty9, ta.i_mnth_plan_qty10, ta.i_mnth_plan_qty11, ";
+                strCmd += "ta.i_mnth_plan_qty12, ta.i_mnth_plan_qty13, ta.i_mnth_plan_qty14, ";
+                strCmd += "ta.i_mnth_plan_qty15, ta.i_mnth_plan_qty16, ta.i_mnth_plan_qty17, ";
+                strCmd += "ta.i_mnth_plan_qty18, ta.i_mnth_plan_qty19, ta.i_mnth_plan_qty20 ";
+                strCmd += "FROM t_is_f20m_kanban_plan_head_tr ta ";
+                strCmd += "WHERE ta.i_year_mnth LIKE '%" + year + "%'";
+                if (type == "PMSP")
+                {
+                    strCmd += "AND ta.i_dl_cd IN (SELECT tc.i_shipto_cd ";
+                    strCmd += "FROM t_is_sale_shipto_ms tc ";
+                    strCmd += "WHERE tc.i_group_desc = 'PMSP')";
+                }
+
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        internal DataSet selectForecastUnitPrice(string yearMonth, string type)
+        {
+            try
+            {
+                string strCmd = "SELECT   i_item_cd, CASE ";
+                strCmd += "WHEN MAX (i_up) IS NOT NULL ";
+                strCmd += "THEN MAX (i_up) ";
+                strCmd += "ELSE 0 ";
+                strCmd += "END AS i_up ";
+                strCmd += "FROM t_so_tr ";
+                strCmd += "WHERE TO_CHAR (i_del_date, 'yyyymm') = '" + yearMonth + "' ";
+                if (type == "PMSP")
+                {
+                    strCmd += "AND trim(t_so_tr.i_del_dest_cd) = '8-1-003-3' ";
+                }
+                else if (type == "OEM")
+                {
+                    strCmd += "AND trim(t_so_tr.i_del_dest_cd) IN (SELECT trim(tc.i_shipto_cd) as i_shipto_cd ";
+                    strCmd += "FROM t_is_sale_shipto_ms tc ";
+                    strCmd += "WHERE (tc.i_group_desc = 'OEM' OR tc.i_group_desc = 'OTHER')) ";
+                }
+
+                strCmd += "GROUP BY i_item_cd";
+
+                DataSet ds = obj.oracle.libOracle.GetData(strCmd);
+                return ds;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         internal DataSet selectProjectOEMActual(string yearMonth, string groupDesc, string projectDesc)
         {
             try

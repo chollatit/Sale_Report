@@ -12,6 +12,7 @@ using Sale_Report.View.Loading;
 using System.IO;
 using OfficeOpenXml;
 using System.Diagnostics;
+using System.Threading;
 
 namespace Sale_Report.View.Report
 {
@@ -27,18 +28,24 @@ namespace Sale_Report.View.Report
         DataSet dsOverallFrstThisMonth = new DataSet();
         DataSet dsOverallActualPrevMonth = new DataSet();
         DataSet dsOverallFrstPrevMonth = new DataSet();
+        DataSet dsOAPThisMonth = new DataSet();
+        DataSet dsOAPPrevMonth = new DataSet();
 
         // REPORT2
         DataSet dsProjOEMActualThisMonth = new DataSet();
         DataSet dsProjOEMActualPrevMonth = new DataSet();
         DataSet dsProjOEMFrstThisMonth = new DataSet();
         DataSet dsProjOEMFrstPrevMonth = new DataSet();
+        DataSet dsOEMOAPThisMonth = new DataSet();
+        DataSet dsOEMOAPPrevMonth = new DataSet();
 
         // REPORT3
         DataSet dsProjPMSPActualThisMonth = new DataSet();
         DataSet dsProjPMSPActualPrevMonth = new DataSet();
         DataSet dsProjPMSPForecastThisMonth = new DataSet();
         DataSet dsProjPMSPForecastPrevMonth = new DataSet();
+        DataSet dsPMSPOAPThisMonth = new DataSet();
+        DataSet dsPMSPOAPPrevMonth = new DataSet();
 
         // REPORT4
         DataSet dsOverallYearOAP = new DataSet();
@@ -88,9 +95,12 @@ namespace Sale_Report.View.Report
         bool flgSearchComplete = true;
         bool flgExportComplete = true;
 
+        SynchronizationContext _syncContext;
+
         public SummarySaleReports()
         {
             InitializeComponent();
+            _syncContext = SynchronizationContext.Current;
 
             txtNameSchema.Text = "SCHEMA : " + saleResult.obj.oracle.User;
             txtDateTime.Text = DateTime.Now.ToString();
@@ -173,6 +183,7 @@ namespace Sale_Report.View.Report
 
                 if (processCls == "search")
                 {
+                    updateStatusExportReport("Complete 0/12 report.");
                     processOverallSalesResult();
                     processAccumulateSalesResult();
                     processOverallSalesForecast();
@@ -196,6 +207,11 @@ namespace Sale_Report.View.Report
             }
         }
 
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+        }
+
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (saleResult.obj.oracle.frmLoad != null && saleResult.obj.oracle.frmLoad.Visible)
@@ -204,19 +220,33 @@ namespace Sale_Report.View.Report
             }
         }
 
+        private void updateStatusExportReport(string strStatus)
+        {
+            SendOrPostCallback callback = new SendOrPostCallback((o) =>
+            {
+                saleResult.obj.oracle.frmLoad.updateStatus(strStatus);
+            });
+            _syncContext.Send(callback, null);
+        }
+
         private void processOverallSalesResult()
         {
             string yearThisMonth = dtpYearMonth.Value.ToString("yyyyMM");
             string yearPrevMonth = dtpYearMonth.Value.AddMonths(-1).ToString("yyyyMM");
+            string year = dtpYearMonth.Value.ToString("yyyy");
+            int month = dtpYearMonth.Value.Month;
 
-            report1(yearThisMonth, yearPrevMonth);
-            report2(yearThisMonth, yearPrevMonth);
-            report3(yearThisMonth, yearPrevMonth);
+            report1(year, month, yearThisMonth, yearPrevMonth);
+            updateStatusExportReport("Complete 1/12 report.");
+            report2(year, month, yearThisMonth, yearPrevMonth);
+            updateStatusExportReport("Complete 2/12 report.");
+            report3(year, month, yearThisMonth, yearPrevMonth);
+            updateStatusExportReport("Complete 3/12 report.");
         }
 
         #region OVERALL SALE RESULT
 
-        private void report1(string yearThisMonth, string yearPrevMonth)
+        private void report1(string year, int month, string yearThisMonth, string yearPrevMonth)
         {
             DataSet dsTmp1 = null;
             DataSet dsTmp2 = null;
@@ -275,9 +305,100 @@ namespace Sale_Report.View.Report
                 dsOverallFrstThisMonth.Merge(dsTmp1);
                 dsOverallFrstPrevMonth.Merge(dsTmp2);
             }
+
+            //OAP
+            dsTmp1 = null;
+            dsTmp2 = null;
+
+            DataSet dsOAPQty = saleResult.selectMonthlyOAP(year, "ALL");
+            DataSet dsOAPUp = saleResult.selectForecastUnitPrice(yearPrevMonth, "ALL");
+
+            dsTmp1 = new DataSet();
+            dsTmp1.Tables.Add(this.createTableMonthlyOAP());
+            dsTmp1 = this.calculateMonthlySaleOAP("OAP Prev Month", dsOAPQty, dsOAPUp, dsTmp1, month - 1);
+
+            dsOAPPrevMonth.Merge(dsTmp1);
+
+            dsOAPUp = null;
+            dsOAPUp = saleResult.selectForecastUnitPrice(yearThisMonth, "ALL");
+
+            dsTmp2 = new DataSet();
+            dsTmp2.Tables.Add(this.createTableMonthlyOAP());
+            dsTmp2 = this.calculateMonthlySaleOAP("OAP This Month", dsOAPQty, dsOAPUp, dsTmp2, month);
+
+            dsOAPThisMonth.Merge(dsTmp2);
         }
 
-        private void report2(string yearThisMonth, string yearPrevMonth)
+        private DataTable createTableMonthlyOAP()
+        {
+            DataTable dt = new DataTable();
+            dt.Columns.Add("type", typeof(String));
+            dt.Columns.Add("i_frst_amt", typeof(Double));
+            dt.Columns.Add("i_actual_amt", typeof(Double));
+
+            return dt;
+        }
+
+        private DataSet calculateMonthlySaleOAP(string type, DataSet dsQty, DataSet dsUp, DataSet dsMaster, int month)
+        {
+            try
+            {
+                int monthBegin = 0;
+                if (month >= 4 && month <= 12)
+                {
+                    monthBegin = month - 3;
+                }
+                else if (month >= 1 && month <= 3)
+                {
+                    monthBegin = month + 9;
+                }
+
+                DataTable dtTmp = new DataTable();
+                dtTmp = dsMaster.Tables[0].Clone();
+                DataRow drTmp = dtTmp.NewRow();
+
+                drTmp["TYPE"] = type;
+                drTmp["i_frst_amt"] = 0.0;
+                drTmp["i_actual_amt"] = 0.0;
+
+                double qty = 0.0;
+                string strCmd = "";
+                double up = 0.0;
+                for (int i = 0; i < dsQty.Tables[0].Rows.Count; i++)
+                {
+                    strCmd = "";
+                    strCmd = "trim(i_item_cd) = '" + dsQty.Tables[0].Rows[i]["i_item_cd"].ToString().Trim() + "'";
+
+                    DataRow[] dr = dsUp.Tables[0].Select(strCmd);
+                    if (dr.Count() > 0)
+                    {
+                        up = Convert.ToDouble(dr[0]["i_up"].ToString());
+                    }
+                    else
+                    {
+                        up = 0.0;
+                    }
+
+                    qty += (Convert.ToInt32(dsQty.Tables[0].Rows[i]["i_mnth_plan_qty" + (monthBegin).ToString()].ToString()) * up);
+                }
+
+                drTmp["i_frst_amt"] = qty;
+                drTmp["i_actual_amt"] = qty;
+
+                dtTmp.Rows.Add(drTmp);
+
+                DataSet dsTmp = new DataSet();
+                dsTmp.Tables.Add(dtTmp);
+
+                return dsTmp;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private void report2(string year, int month, string yearThisMonth, string yearPrevMonth)
         {
             DataSet dsTmp1 = null;
             DataSet dsTmp2 = null;
@@ -362,9 +483,31 @@ namespace Sale_Report.View.Report
                 dsProjOEMFrstThisMonth.Merge(dsTmp1);
                 dsProjOEMFrstPrevMonth.Merge(dsTmp2);
             }
+
+            //OAP
+            dsTmp1 = null;
+            dsTmp2 = null;
+
+            DataSet dsOAPQty = saleResult.selectMonthlyOAP(year, "OEM");
+            DataSet dsOAPUp = saleResult.selectForecastUnitPrice(yearPrevMonth, "OEM");
+
+            dsTmp1 = new DataSet();
+            dsTmp1.Tables.Add(this.createTableMonthlyOAP());
+            dsTmp1 = this.calculateMonthlySaleOAP("OAP Prev Month", dsOAPQty, dsOAPUp, dsTmp1, month - 1);
+
+            dsOEMOAPPrevMonth.Merge(dsTmp1);
+
+            dsOAPUp = null;
+            dsOAPUp = saleResult.selectForecastUnitPrice(yearThisMonth, "OEM");
+
+            dsTmp2 = new DataSet();
+            dsTmp2.Tables.Add(this.createTableMonthlyOAP());
+            dsTmp2 = this.calculateMonthlySaleOAP("OAP This Month", dsOAPQty, dsOAPUp, dsTmp2, month);
+
+            dsOEMOAPThisMonth.Merge(dsTmp2);
         }
 
-        private void report3(string yearThisMonth, string yearPrevMonth)
+        private void report3(string year, int month, string yearThisMonth, string yearPrevMonth)
         {
             DataSet dsTmp1 = null;
             DataSet dsTmp2 = null;
@@ -394,6 +537,28 @@ namespace Sale_Report.View.Report
             dsTmp2 = saleResult.selectProjectPMSPForecast(yearPrevMonth);
             dsProjPMSPForecastThisMonth.Merge(dsTmp1);
             dsProjPMSPForecastPrevMonth.Merge(dsTmp2);
+
+            //OAP
+            dsTmp1 = null;
+            dsTmp2 = null;
+
+            DataSet dsOAPQty = saleResult.selectMonthlyOAP(year, "PMSP");
+            DataSet dsOAPUp = saleResult.selectForecastUnitPrice(yearPrevMonth, "PMSP");
+
+            dsTmp1 = new DataSet();
+            dsTmp1.Tables.Add(this.createTableMonthlyOAP());
+            dsTmp1 = this.calculateMonthlySaleOAP("OAP Prev Month", dsOAPQty, dsOAPUp, dsTmp1, month - 1);
+
+            dsPMSPOAPPrevMonth.Merge(dsTmp1);
+
+            dsOAPUp = null;
+            dsOAPUp = saleResult.selectForecastUnitPrice(yearThisMonth, "PMSP");
+
+            dsTmp2 = new DataSet();
+            dsTmp2.Tables.Add(this.createTableMonthlyOAP());
+            dsTmp2 = this.calculateMonthlySaleOAP("OAP This Month", dsOAPQty, dsOAPUp, dsTmp2, month);
+
+            dsPMSPOAPThisMonth.Merge(dsTmp2);
         }
 
         #endregion
@@ -415,8 +580,11 @@ namespace Sale_Report.View.Report
             }
 
             report4(yearMonthBegin, yearMonthEnd);
+            updateStatusExportReport("Complete 4/12 report.");
             report5(yearMonthBegin, yearMonthEnd);
+            updateStatusExportReport("Complete 5/12 report.");
             report6(yearMonthBegin, yearMonthEnd);
+            updateStatusExportReport("Complete 6/12 report.");
         }
 
         #region ACCUMULATE SALES RESULT
@@ -836,8 +1004,11 @@ namespace Sale_Report.View.Report
             int prevMonth = dtpYearMonth.Value.AddMonths(-1).Month;
 
             report7(year, yearMonth, yearMonthPrev, month, prevMonth);
+            updateStatusExportReport("Complete 7/12 report.");
             report8(month, year, yearMonth, yearMonthPrev);
+            updateStatusExportReport("Complete 8/12 report.");
             report9(year, yearMonth, yearMonthPrev, month, prevMonth);
+            updateStatusExportReport("Complete 9/12 report.");
         }
 
         #region OVERALL MONTHLY SALES FORECAST
@@ -1599,8 +1770,11 @@ namespace Sale_Report.View.Report
             string yearMonthPrev = year + month.ToString("00");
 
             report10(year, month, prevMonth);
+            updateStatusExportReport("Complete 10/12 report.");
             report11(year, month, prevMonth);
+            updateStatusExportReport("Complete 11/12 report.");
             report12(year, month, prevMonth);
+            updateStatusExportReport("Complete 12/12 report.");
         }
 
         #region ACCUMULATE FORECAST
@@ -1799,7 +1973,12 @@ namespace Sale_Report.View.Report
                     workSheet1.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallFrstThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
                     workSheet1.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
                 }
+                workSheet1.Cells["B7"].Value = Convert.ToDouble(dsOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                workSheet1.Cells["C7"].Value = Convert.ToDouble(dsOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                workSheet1.Cells["D7"].Value = Convert.ToDouble(dsOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                workSheet1.Cells["E7"].Value = Convert.ToDouble(dsOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
 
+                
                 //2.OVERALL PROJECT OEM
                 var workSheet2 = workBook.Worksheets[2];
                 workSheet2.Cells["B1"].Value = prevMonth;
@@ -1811,6 +1990,10 @@ namespace Sale_Report.View.Report
                     workSheet2.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMFrstThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
                     workSheet2.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
                 }
+                workSheet2.Cells["B10"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                workSheet2.Cells["C10"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                workSheet2.Cells["D10"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                workSheet2.Cells["E10"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
 
                 //3.OVERALL PROJECT PMSP
                 var workSheet3 = workBook.Worksheets[3];
@@ -1823,7 +2006,12 @@ namespace Sale_Report.View.Report
                     workSheet3.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPForecastThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
                     workSheet3.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
                 }
+                workSheet2.Cells["B6"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                workSheet2.Cells["C6"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                workSheet2.Cells["D6"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                workSheet2.Cells["E6"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
 
+                
                 //4.Acc Overall Sale Result
                 var workSheet4 = workBook.Worksheets[4];
                 for (int i = 0; i < dsOverallYearOAP.Tables[0].Rows.Count; i++)
@@ -1873,24 +2061,34 @@ namespace Sale_Report.View.Report
                 var workSheet8 = workBook.Worksheets[8];
                 for (int i = 0; i < dsOEMSaleForecast.Tables[0].Rows.Count; i++)
                 {
-                    workSheet7.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month"].ToString()) / 1000000;
-                    workSheet7.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month"].ToString()) / 1000000;
-                    workSheet7.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month"].ToString()) / 1000000;
-                    workSheet7.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n"].ToString()) / 1000000;
-                    workSheet7.Cells["F" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n"].ToString()) / 1000000;
-                    workSheet7.Cells["G" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n"].ToString()) / 1000000;
-                    workSheet7.Cells["H" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n1"].ToString()) / 1000000;
-                    workSheet7.Cells["I" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n1"].ToString()) / 1000000;
-                    workSheet7.Cells["J" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n1"].ToString()) / 1000000;
-                    workSheet7.Cells["K" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n2"].ToString()) / 1000000;
-                    workSheet7.Cells["L" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n2"].ToString()) / 1000000;
-                    workSheet7.Cells["M" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n2"].ToString()) / 1000000;
-                    workSheet7.Cells["N" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n3"].ToString()) / 1000000;
-                    workSheet7.Cells["O" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n3"].ToString()) / 1000000;
-                    workSheet7.Cells["P" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n3"].ToString()) / 1000000;
-                    workSheet7.Cells["Q" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n4"].ToString()) / 1000000;
-                    workSheet7.Cells["R" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n4"].ToString()) / 1000000;
-                    workSheet7.Cells["S" + (i + 3).ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n4"].ToString()) / 1000000;
+                    int index = 0;
+                    if (i == dsOEMSaleForecast.Tables[0].Rows.Count - 1)
+                    {
+                        index = i + 4;
+                    }
+                    else
+                    {
+                        index = i + 3;
+                    }
+
+                    workSheet8.Cells["B" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month"].ToString()) / 1000000;
+                    workSheet8.Cells["C" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month"].ToString()) / 1000000;
+                    workSheet8.Cells["D" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month"].ToString()) / 1000000;
+                    workSheet8.Cells["E" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n"].ToString()) / 1000000;
+                    workSheet8.Cells["F" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n"].ToString()) / 1000000;
+                    workSheet8.Cells["G" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n"].ToString()) / 1000000;
+                    workSheet8.Cells["H" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n1"].ToString()) / 1000000;
+                    workSheet8.Cells["I" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n1"].ToString()) / 1000000;
+                    workSheet8.Cells["J" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n1"].ToString()) / 1000000;
+                    workSheet8.Cells["K" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n2"].ToString()) / 1000000;
+                    workSheet8.Cells["L" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n2"].ToString()) / 1000000;
+                    workSheet8.Cells["M" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n2"].ToString()) / 1000000;
+                    workSheet8.Cells["N" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n3"].ToString()) / 1000000;
+                    workSheet8.Cells["O" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n3"].ToString()) / 1000000;
+                    workSheet8.Cells["P" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n3"].ToString()) / 1000000;
+                    workSheet8.Cells["Q" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n4"].ToString()) / 1000000;
+                    workSheet8.Cells["R" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n4"].ToString()) / 1000000;
+                    workSheet8.Cells["S" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n4"].ToString()) / 1000000;
                 }
 
 
