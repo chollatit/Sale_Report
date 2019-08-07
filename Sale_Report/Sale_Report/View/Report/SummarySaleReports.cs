@@ -13,6 +13,7 @@ using System.IO;
 using OfficeOpenXml;
 using System.Diagnostics;
 using System.Threading;
+using System.Collections;
 
 namespace Sale_Report.View.Report
 {
@@ -22,6 +23,8 @@ namespace Sale_Report.View.Report
         AccumulateResult accResult = new AccumulateResult();
         SaleForecast saleForecast = new SaleForecast();
         AccumulateForecast accForcast = new AccumulateForecast();
+
+        ArrayList listReportSelected = new ArrayList();
 
         // REPORT1
         DataSet dsOverallActualThisMonth = new DataSet();
@@ -95,6 +98,9 @@ namespace Sale_Report.View.Report
         bool flgSearchComplete = true;
         bool flgExportComplete = true;
 
+        int totalReport = 0;
+        int countReport = 0;
+
         SynchronizationContext _syncContext;
 
         public SummarySaleReports()
@@ -114,8 +120,45 @@ namespace Sale_Report.View.Report
 
         private void btnSearch_Click(object sender, EventArgs e)
         {
-            processCls = "search";
-            summaryProcess();
+            listReportSelected = getReportSelected();
+
+            if (listReportSelected != null)
+            {
+                if (listReportSelected.Count > 0)
+                {
+                    totalReport = listReportSelected.Count;
+                    processCls = "search";
+                    summaryProcess();
+                }
+                else
+                {
+                    MessageBox.Show("Please select report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select report.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+        }
+
+        private ArrayList getReportSelected()
+        {
+            try
+            {
+                ArrayList item = new ArrayList();
+                foreach (string li1 in clbReport.CheckedItems)
+                {
+                    item.Add(li1.Split('#')[0].Trim());
+                }
+
+                return item;
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         private void summaryProcess()
@@ -183,7 +226,7 @@ namespace Sale_Report.View.Report
 
                 if (processCls == "search")
                 {
-                    updateStatusExportReport("Complete 0/12 report.");
+                    updateStatusExportReport("Complete 0/" + totalReport + " report.");
                     processOverallSalesResult();
                     processAccumulateSalesResult();
                     processOverallSalesForecast();
@@ -236,12 +279,26 @@ namespace Sale_Report.View.Report
             string year = dtpYearMonth.Value.ToString("yyyy");
             int month = dtpYearMonth.Value.Month;
 
-            report1(year, month, yearThisMonth, yearPrevMonth);
-            updateStatusExportReport("Complete 1/12 report.");
-            report2(year, month, yearThisMonth, yearPrevMonth);
-            updateStatusExportReport("Complete 2/12 report.");
-            report3(year, month, yearThisMonth, yearPrevMonth);
-            updateStatusExportReport("Complete 3/12 report.");
+            if (listReportSelected.Contains("Report 1"))
+            {
+                report1(year, month, yearThisMonth, yearPrevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 2"))
+            {
+                report2(year, month, yearThisMonth, yearPrevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 3"))
+            {
+                report3(year, month, yearThisMonth, yearPrevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
         }
 
         #region OVERALL SALE RESULT
@@ -579,12 +636,26 @@ namespace Sale_Report.View.Report
                 yearMonthBegin = "04" + dtpYearMonth.Value.AddYears(-1).ToString("yyyy");
             }
 
-            report4(yearMonthBegin, yearMonthEnd);
-            updateStatusExportReport("Complete 4/12 report.");
-            report5(yearMonthBegin, yearMonthEnd);
-            updateStatusExportReport("Complete 5/12 report.");
-            report6(yearMonthBegin, yearMonthEnd);
-            updateStatusExportReport("Complete 6/12 report.");
+            if (listReportSelected.Contains("Report 4"))
+            {
+                report4(yearMonthBegin, yearMonthEnd);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 5"))
+            {
+                report5(yearMonthBegin, yearMonthEnd);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 6"))
+            {
+                report6(yearMonthBegin, yearMonthEnd);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
         }
 
         #region ACCUMULATE SALES RESULT
@@ -1003,12 +1074,26 @@ namespace Sale_Report.View.Report
             int month = dtpYearMonth.Value.Month;
             int prevMonth = dtpYearMonth.Value.AddMonths(-1).Month;
 
-            report7(year, yearMonth, yearMonthPrev, month, prevMonth);
-            updateStatusExportReport("Complete 7/12 report.");
-            report8(month, year, yearMonth, yearMonthPrev);
-            updateStatusExportReport("Complete 8/12 report.");
-            report9(year, yearMonth, yearMonthPrev, month, prevMonth);
-            updateStatusExportReport("Complete 9/12 report.");
+            if (listReportSelected.Contains("Report 7"))
+            {
+                report7(year, yearMonth, yearMonthPrev, month, prevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 8"))
+            {
+                report8(month, year, yearMonth, yearMonthPrev);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 9"))
+            {
+                report9(year, yearMonth, yearMonthPrev, month, prevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
         }
 
         #region OVERALL MONTHLY SALES FORECAST
@@ -1212,6 +1297,7 @@ namespace Sale_Report.View.Report
             DataSet dsTmp = new DataSet();
             DataSet dsFrstQty = null;
             DataSet dsFrstUp = null;
+            DataSet ds = null;
 
             // Prev of Prev Month
             dsTmp.Tables.Add(this.createTableOEMSaleForecast());
@@ -1235,9 +1321,9 @@ namespace Sale_Report.View.Report
                 dsFrstQty = saleForecast.selectForecastQty(yearMonthPrev, "OEM", dlGroup[i]);
                 dsFrstUp = saleForecast.selectForecastUnitPrice(yearMonthPrev, "OEM", dlGroup[i]);
 
-                DataSet ds = this.calculateOEMSalePrevForecast(groupDesc[i], dsFrstQty, dsFrstUp, dsTmp);
-                updateCelData("prev", ds);
-                //dsOEMSaleForecast.Merge(dsTmp);
+                ds = null;
+                ds = this.calculateOEMSalePrevForecast(groupDesc[i], dsFrstQty, dsFrstUp, dsTmp);
+                updateCellData("prev", ds);
             }
 
             // Month
@@ -1248,8 +1334,9 @@ namespace Sale_Report.View.Report
                 dsFrstQty = saleForecast.selectForecastQty(yearMonth, "OEM", dlGroup[i]);
                 dsFrstUp = saleForecast.selectForecastUnitPrice(yearMonth, "OEM", dlGroup[i]);
 
-                DataSet ds = this.calculateOEMSaleForecast(groupDesc[i], dsFrstQty, dsFrstUp, dsTmp);
-                updateCelData("month", ds);
+                ds = null;
+                ds = this.calculateOEMSaleForecast(groupDesc[i], dsFrstQty, dsFrstUp, dsTmp);
+                updateCellData("month", ds);
                 //dsOEMSaleForecast.Merge(ds);
             }
 
@@ -1270,9 +1357,10 @@ namespace Sale_Report.View.Report
                         dsActual = saleForecast.selectActualResult(year + (month + (j - 1)).ToString("00"), "OEM", dlGroup[i]);
                     }
 
-                    DataSet ds = this.calculateOEMActualResult(groupDesc[i], j, dsActual, dsTmp);
+                    ds = null;
+                    ds = this.calculateOEMActualResult(groupDesc[i], j, dsActual, dsTmp);
 
-                    updateCelData("actual", ds);
+                    updateCellData("actual", ds);
                     //dsOEMSaleForecast.Merge(ds);
                 }
             }
@@ -1280,15 +1368,16 @@ namespace Sale_Report.View.Report
             // OAP
             dsFrstQty = null;
             dsFrstUp = null;
-            dsFrstQty = saleForecast.selectMonthlyOAP(year, "ALL");
+            dsFrstQty = saleForecast.selectMonthlyOAP(year, "OEM");
             dsFrstUp = saleForecast.selectForecastUnitPrice(yearMonthPrev, "ALL", "ALL");
 
-            DataSet ds1 = this.calculateOEMAnnualOAP("OAP", dsFrstQty, dsFrstUp, dsTmp, month);
-            updateCelData("oap", ds1);
+            ds = null;
+            ds = this.calculateOEMAnnualOAP("OAP", dsFrstQty, dsFrstUp, dsTmp, month);
+            updateCellData("oap", ds);
             //dsOEMSaleForecast.Merge(ds1);
         }
 
-        private void updateCelData(string process, DataSet dsData)
+        private void updateCellData(string process, DataSet dsData)
         {
             for (int i = 0; i < dsData.Tables[0].Rows.Count; i++)
             {
@@ -1326,11 +1415,9 @@ namespace Sale_Report.View.Report
                             dr["i_amt_actual_month_n3"] = dsData.Tables[0].Rows[i]["i_amt_actual_month_n3"];
                         if (dsData.Tables[0].Rows[i]["i_amt_actual_month_n4"].ToString().Trim().Length > 0)
                             dr["i_amt_actual_month_n4"] = dsData.Tables[0].Rows[i]["i_amt_actual_month_n4"];
-
                     }
                     else if (process == "oap")
                     {
-
                         dr["i_amt_prev_month"] = dsData.Tables[0].Rows[i]["i_amt_prev_month"];
                         dr["i_amt_last_month"] = dsData.Tables[0].Rows[i]["i_amt_last_month"];
                         dr["i_amt_actual_month"] = dsData.Tables[0].Rows[i]["i_amt_actual_month"];
@@ -1521,7 +1608,7 @@ namespace Sale_Report.View.Report
                     }
                     else
                     {
-                        drTmp["i_amt_prev_month_n" + (j).ToString()] = amt[j];
+                        drTmp["i_amt_last_month_n" + (j).ToString()] = amt[j];
                     }
                 }
 
@@ -1769,12 +1856,26 @@ namespace Sale_Report.View.Report
             int prevMonth = dtpYearMonth.Value.AddMonths(-1).Month;
             string yearMonthPrev = year + month.ToString("00");
 
-            report10(year, month, prevMonth);
-            updateStatusExportReport("Complete 10/12 report.");
-            report11(year, month, prevMonth);
-            updateStatusExportReport("Complete 11/12 report.");
-            report12(year, month, prevMonth);
-            updateStatusExportReport("Complete 12/12 report.");
+            if (listReportSelected.Contains("Report 10"))
+            {
+                report10(year, month, prevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 11"))
+            {
+                report11(year, month, prevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
+
+            if (listReportSelected.Contains("Report 12"))
+            {
+                report12(year, month, prevMonth);
+                countReport++;
+                updateStatusExportReport("Complete " + countReport + "/" + totalReport + " report.");
+            }
         }
 
         #region ACCUMULATE FORECAST
@@ -1954,188 +2055,290 @@ namespace Sale_Report.View.Report
             string[] yearPrevMonth = dtpYearMonth.Value.AddMonths(-1).ToString("dd/MM/yyyy").Split('/');
 
             DateTime thisMonth = DateTime.Parse("01/" + yearThisMonth[1] + "/" + yearThisMonth[2]);
-            DateTime prevMonth = DateTime.Parse("01/" + yearPrevMonth[1] + "/" + yearPrevMonth[2]); ;
+            DateTime prevMonth = DateTime.Parse("01/" + yearPrevMonth[1] + "/" + yearPrevMonth[2]);
+
+            string year = dtpYearMonth.Value.ToString("yy");
+            string prevYear = dtpYearMonth.Value.AddYears(-1).ToString("yy");
+            string nextYear = dtpYearMonth.Value.AddYears(1).ToString("yy");
+            string strPrevMonth = dtpYearMonth.Value.AddMonths(-1).ToString("MMM");
+
+            string strThisMonth = dtpYearMonth.Value.ToString("MMM");
+            string strMonthN1 = dtpYearMonth.Value.AddMonths(1).ToString("MMM");
+            string strMonthN2 = dtpYearMonth.Value.AddMonths(2).ToString("MMM");
+            string strMonthN3 = dtpYearMonth.Value.AddMonths(3).ToString("MMM");
+            string strMonthN4 = dtpYearMonth.Value.AddMonths(4).ToString("MMM");
+
+            string sheet4ColumnBName = year + "OAP Annual Target";
+            string sheet4ColumnCName = year + "RAP Annual";
+            string sheet4ColumnDName = year + "OAP Plan";
+
+            string sheet10ColumnBName = year + "OAP";
+            string sheet10ColumnCName = year + "RAP";
+            string sheet10ColumnDName = year + "OAP to Apr'" + prevYear + "-Mar'" + year;
+            string sheet10ColumnEName = "Lastest Apr'" + year + "-Aug'" + nextYear;
+
+            string sheet12ColumnBName = "Annual Plan";
+            string sheet12ColumnCName = "Revise Annual Plan";
+            string sheet12ColumnDName = year + "OAP to Apr'" + prevYear + "-Mar'" + year;
+            string sheet12ColumnEName = "Lastest Apr'" + year + "-Mar'" + nextYear;
 
             FileInfo template = new FileInfo(PATH_Program + @"\Template\Template-Sale-Report.xlsx");
             using (var package = new ExcelPackage(template))
             {
                 var workBook = package.Workbook;
 
-
-                //1.OVERALL RESULT
-                var workSheet1 = workBook.Worksheets[1];
-                workSheet1.Cells["B1"].Value = prevMonth;
-                workSheet1.Cells["D1"].Value = thisMonth;
-                for (int i = 0; i < dsOverallFrstPrevMonth.Tables[0].Rows.Count; i++)
+                if (listReportSelected.Contains("Report 1"))
                 {
-                    workSheet1.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallFrstPrevMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
-                    workSheet1.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallActualPrevMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
-                    workSheet1.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallFrstThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
-                    workSheet1.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
-                }
-                workSheet1.Cells["B7"].Value = Convert.ToDouble(dsOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
-                workSheet1.Cells["C7"].Value = Convert.ToDouble(dsOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
-                workSheet1.Cells["D7"].Value = Convert.ToDouble(dsOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
-                workSheet1.Cells["E7"].Value = Convert.ToDouble(dsOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
-
-                
-                //2.OVERALL PROJECT OEM
-                var workSheet2 = workBook.Worksheets[2];
-                workSheet2.Cells["B1"].Value = prevMonth;
-                workSheet2.Cells["D1"].Value = thisMonth;
-                for (int i = 0; i < dsProjOEMActualThisMonth.Tables[0].Rows.Count; i++)
-                {
-                    workSheet2.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMFrstPrevMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
-                    workSheet2.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMActualPrevMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
-                    workSheet2.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMFrstThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
-                    workSheet2.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
-                }
-                workSheet2.Cells["B10"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
-                workSheet2.Cells["C10"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
-                workSheet2.Cells["D10"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
-                workSheet2.Cells["E10"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
-
-                //3.OVERALL PROJECT PMSP
-                var workSheet3 = workBook.Worksheets[3];
-                workSheet3.Cells["B1"].Value = prevMonth;
-                workSheet3.Cells["D1"].Value = thisMonth;
-                for (int i = 0; i < dsProjPMSPActualThisMonth.Tables[0].Rows.Count; i++)
-                {
-                    workSheet3.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPForecastPrevMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
-                    workSheet3.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPActualPrevMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
-                    workSheet3.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPForecastThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
-                    workSheet3.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
-                }
-                workSheet2.Cells["B6"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
-                workSheet2.Cells["C6"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
-                workSheet2.Cells["D6"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
-                workSheet2.Cells["E6"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
-
-                
-                //4.Acc Overall Sale Result
-                var workSheet4 = workBook.Worksheets[4];
-                for (int i = 0; i < dsOverallYearOAP.Tables[0].Rows.Count; i++)
-                {
-                    workSheet4.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallYearOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet4.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsAccumulateOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet4.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsAccActualResult.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                }
-
-                //5.Acc OEM Sale Result
-                var workSheet5 = workBook.Worksheets[5];
-                for (int i = 0; i < dsProjOEMYearOAP.Tables[0].Rows.Count; i++)
-                {
-                    workSheet5.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjOEMYearOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet5.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjOEMAccumulateOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet5.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjOEMAccActualResult.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                }
-
-                //6.Acc PMSP Sale Result
-                var workSheet6 = workBook.Worksheets[6];
-                for (int i = 0; i < dsProjPMSPYearOAP.Tables[0].Rows.Count; i++)
-                {
-                    workSheet6.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjPMSPYearOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet6.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjPMSPAccumulateOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet6.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjPMSPAccActualResult.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                }
-
-                //7.Overall Monthly sales forecast
-                var workSheet7 = workBook.Worksheets[7];
-                for (int i = 0; i < dsOverallSaleForecat.Tables[0].Rows.Count; i++)
-                {
-                    workSheet7.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m1"].ToString()) / 1000000;
-                    workSheet7.Cells["C" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m2"].ToString()) / 1000000;
-                    workSheet7.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m3"].ToString()) / 1000000;
-                    workSheet7.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m4"].ToString()) / 1000000;
-                    workSheet7.Cells["F" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m5"].ToString()) / 1000000;
-                    workSheet7.Cells["G" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m6"].ToString()) / 1000000;
-                    workSheet7.Cells["H" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m7"].ToString()) / 1000000;
-                    workSheet7.Cells["I" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m8"].ToString()) / 1000000;
-                    workSheet7.Cells["J" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m9"].ToString()) / 1000000;
-                    workSheet7.Cells["K" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m10"].ToString()) / 1000000;
-                    workSheet7.Cells["L" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m11"].ToString()) / 1000000;
-                    workSheet7.Cells["M" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m12"].ToString()) / 1000000;
-                }
-
-                //8.OEM Monthly sales forecast
-                var workSheet8 = workBook.Worksheets[8];
-                for (int i = 0; i < dsOEMSaleForecast.Tables[0].Rows.Count; i++)
-                {
-                    int index = 0;
-                    if (i == dsOEMSaleForecast.Tables[0].Rows.Count - 1)
+                    //1.OVERALL RESULT
+                    var workSheet1 = workBook.Worksheets[1];
+                    workSheet1.Cells["B1"].Value = prevMonth;
+                    workSheet1.Cells["D1"].Value = thisMonth;
+                    for (int i = 0; i < dsOverallFrstPrevMonth.Tables[0].Rows.Count; i++)
                     {
-                        index = i + 4;
+                        workSheet1.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallFrstPrevMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
+                        workSheet1.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallActualPrevMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
+                        workSheet1.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallFrstThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
+                        workSheet1.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsOverallActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
                     }
-                    else
+                    workSheet1.Cells["B7"].Value = Convert.ToDouble(dsOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                    workSheet1.Cells["C7"].Value = Convert.ToDouble(dsOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                    workSheet1.Cells["D7"].Value = Convert.ToDouble(dsOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                    workSheet1.Cells["E7"].Value = Convert.ToDouble(dsOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                }
+
+                if (listReportSelected.Contains("Report 2"))
+                {
+                    //2.OVERALL PROJECT OEM
+                    var workSheet2 = workBook.Worksheets[2];
+                    workSheet2.Cells["B1"].Value = prevMonth;
+                    workSheet2.Cells["D1"].Value = thisMonth;
+                    for (int i = 0; i < dsProjOEMActualThisMonth.Tables[0].Rows.Count; i++)
                     {
-                        index = i + 3;
+                        workSheet2.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMFrstPrevMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
+                        workSheet2.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMActualPrevMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
+                        workSheet2.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMFrstThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
+                        workSheet2.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjOEMActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
                     }
-
-                    workSheet8.Cells["B" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month"].ToString()) / 1000000;
-                    workSheet8.Cells["C" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month"].ToString()) / 1000000;
-                    workSheet8.Cells["D" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month"].ToString()) / 1000000;
-                    workSheet8.Cells["E" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n"].ToString()) / 1000000;
-                    workSheet8.Cells["F" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n"].ToString()) / 1000000;
-                    workSheet8.Cells["G" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n"].ToString()) / 1000000;
-                    workSheet8.Cells["H" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n1"].ToString()) / 1000000;
-                    workSheet8.Cells["I" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n1"].ToString()) / 1000000;
-                    workSheet8.Cells["J" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n1"].ToString()) / 1000000;
-                    workSheet8.Cells["K" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n2"].ToString()) / 1000000;
-                    workSheet8.Cells["L" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n2"].ToString()) / 1000000;
-                    workSheet8.Cells["M" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n2"].ToString()) / 1000000;
-                    workSheet8.Cells["N" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n3"].ToString()) / 1000000;
-                    workSheet8.Cells["O" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n3"].ToString()) / 1000000;
-                    workSheet8.Cells["P" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n3"].ToString()) / 1000000;
-                    workSheet8.Cells["Q" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n4"].ToString()) / 1000000;
-                    workSheet8.Cells["R" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n4"].ToString()) / 1000000;
-                    workSheet8.Cells["S" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n4"].ToString()) / 1000000;
+                    workSheet2.Cells["B10"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                    workSheet2.Cells["C10"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                    workSheet2.Cells["D10"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                    workSheet2.Cells["E10"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
                 }
 
-
-                //9.PMSP Monthly sales forecast
-                var workSheet9 = workBook.Worksheets[9];
-                for (int i = 0; i < dsPMSPSaleForecast.Tables[0].Rows.Count; i++)
+                if (listReportSelected.Contains("Report 3"))
                 {
-                    workSheet9.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m1"].ToString()) / 1000000;
-                    workSheet9.Cells["C" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m2"].ToString()) / 1000000;
-                    workSheet9.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m3"].ToString()) / 1000000;
-                    workSheet9.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m4"].ToString()) / 1000000;
-                    workSheet9.Cells["F" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m5"].ToString()) / 1000000;
-                    workSheet9.Cells["G" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m6"].ToString()) / 1000000;
-                    workSheet9.Cells["H" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m7"].ToString()) / 1000000;
-                    workSheet9.Cells["I" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m8"].ToString()) / 1000000;
-                    workSheet9.Cells["J" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m9"].ToString()) / 1000000;
-                    workSheet9.Cells["K" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m10"].ToString()) / 1000000;
-                    workSheet9.Cells["L" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m11"].ToString()) / 1000000;
-                    workSheet9.Cells["M" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m12"].ToString()) / 1000000;
+                    //3.OVERALL PROJECT PMSP
+                    var workSheet3 = workBook.Worksheets[3];
+                    workSheet3.Cells["B1"].Value = prevMonth;
+                    workSheet3.Cells["D1"].Value = thisMonth;
+                    for (int i = 0; i < dsProjPMSPActualThisMonth.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet3.Cells["B" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPForecastPrevMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
+                        workSheet3.Cells["C" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPActualPrevMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
+                        workSheet3.Cells["D" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPForecastThisMonth.Tables[0].Rows[i]["i_amt_frst"].ToString()) / 1000000;
+                        workSheet3.Cells["E" + (i + 3).ToString()].Value = Convert.ToDouble(dsProjPMSPActualThisMonth.Tables[0].Rows[i]["i_amt_sale"].ToString()) / 1000000;
+                    }
+                    workSheet3.Cells["B6"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                    workSheet3.Cells["C6"].Value = Convert.ToDouble(dsOEMOAPPrevMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
+                    workSheet3.Cells["D6"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_frst_amt"].ToString()) / 1000000;
+                    workSheet3.Cells["E6"].Value = Convert.ToDouble(dsOEMOAPThisMonth.Tables[0].Rows[0]["i_actual_amt"].ToString()) / 1000000;
                 }
 
-
-                //10.Accumulate Overall Forecast
-                var workSheet10 = workBook.Worksheets[10];
-                workSheet10.Cells["B2"].Value = Convert.ToDouble(dsAccOverallOAP.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
-                workSheet10.Cells["D2"].Value = Convert.ToDouble(dsAccOAPPrevYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
-                workSheet10.Cells["E2"].Value = Convert.ToDouble(dsAccOAPThisYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
-
-                //11.OEM Accumulate Forecast
-                var workSheet11 = workBook.Worksheets[11];
-                for (int i = 0; i < dsOEMAccOverallOAP.Tables[0].Rows.Count; i++)
+                if (listReportSelected.Contains("Report 4"))
                 {
-                    workSheet11.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsOEMAccOverallOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet11.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsOEMAccOAPPrevYear.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
-                    workSheet11.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsOEMAccOAPThisYear.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                    //4.Acc Overall Sale Result
+                    var workSheet4 = workBook.Worksheets[4];
+                    workSheet4.Cells["B1"].Value = sheet4ColumnBName;
+                    workSheet4.Cells["C1"].Value = sheet4ColumnCName;
+                    workSheet4.Cells["D1"].Value = sheet4ColumnDName;
+                    for (int i = 0; i < dsOverallYearOAP.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet4.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallYearOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet4.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsAccumulateOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet4.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsAccActualResult.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                    }
                 }
 
-                //12.PMSP Accumulate Forecast
-                var workSheet12 = workBook.Worksheets[12];
-                workSheet12.Cells["B2"].Value = Convert.ToDouble(dsPMSPAccOverallOAP.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
-                workSheet12.Cells["D2"].Value = Convert.ToDouble(dsPMSPAccOAPPrevYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
-                workSheet12.Cells["E2"].Value = Convert.ToDouble(dsPMSPAccOAPThisYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                if (listReportSelected.Contains("Report 5"))
+                {
+                    //5.Acc OEM Sale Result
+                    var workSheet5 = workBook.Worksheets[5];
+                    workSheet5.Cells["B1"].Value = sheet4ColumnBName;
+                    workSheet5.Cells["C1"].Value = sheet4ColumnCName;
+                    workSheet5.Cells["D1"].Value = sheet4ColumnDName;
+                    for (int i = 0; i < dsProjOEMYearOAP.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet5.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjOEMYearOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet5.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjOEMAccumulateOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet5.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjOEMAccActualResult.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                    }
+                }
 
+                if (listReportSelected.Contains("Report 6"))
+                {
+                    //6.Acc PMSP Sale Result
+                    var workSheet6 = workBook.Worksheets[6];
+                    for (int i = 0; i < dsProjPMSPYearOAP.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet6.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjPMSPYearOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet6.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjPMSPAccumulateOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet6.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsProjPMSPAccActualResult.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                    }
+                }
+
+                if (listReportSelected.Contains("Report 7"))
+                {
+                    //7.Overall Monthly sales forecast
+                    var workSheet7 = workBook.Worksheets[7];
+                    for (int i = 0; i < dsOverallSaleForecat.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet7.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m1"].ToString()) / 1000000;
+                        workSheet7.Cells["C" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m2"].ToString()) / 1000000;
+                        workSheet7.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m3"].ToString()) / 1000000;
+                        workSheet7.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m4"].ToString()) / 1000000;
+                        workSheet7.Cells["F" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m5"].ToString()) / 1000000;
+                        workSheet7.Cells["G" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m6"].ToString()) / 1000000;
+                        workSheet7.Cells["H" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m7"].ToString()) / 1000000;
+                        workSheet7.Cells["I" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m8"].ToString()) / 1000000;
+                        workSheet7.Cells["J" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m9"].ToString()) / 1000000;
+                        workSheet7.Cells["K" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m10"].ToString()) / 1000000;
+                        workSheet7.Cells["L" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m11"].ToString()) / 1000000;
+                        workSheet7.Cells["M" + (i + 2).ToString()].Value = Convert.ToDouble(dsOverallSaleForecat.Tables[0].Rows[i]["m12"].ToString()) / 1000000;
+                    }
+                }
+
+                if (listReportSelected.Contains("Report 8"))
+                {
+                    //8.OEM Monthly sales forecast
+                    var workSheet8 = workBook.Worksheets[8];
+
+                    workSheet8.Cells["B1"].Value = strPrevMonth;
+                    workSheet8.Cells["E1"].Value = strThisMonth;
+                    workSheet8.Cells["H1"].Value = strMonthN1;
+                    workSheet8.Cells["K1"].Value = strMonthN2;
+                    workSheet8.Cells["N1"].Value = strMonthN3;
+                    workSheet8.Cells["Q1"].Value = strMonthN4;
+                    for (int i = 0; i < dsOEMSaleForecast.Tables[0].Rows.Count; i++)
+                    {
+                        int index = 0;
+                        if (i == dsOEMSaleForecast.Tables[0].Rows.Count - 1)
+                        {
+                            index = i + 4;
+                        }
+                        else
+                        {
+                            index = i + 3;
+                        }
+
+                        workSheet8.Cells["B" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month"].ToString()) / 1000000;
+                        workSheet8.Cells["C" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month"].ToString()) / 1000000;
+                        workSheet8.Cells["D" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month"].ToString()) / 1000000;
+                        workSheet8.Cells["E" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n"].ToString()) / 1000000;
+                        workSheet8.Cells["F" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n"].ToString()) / 1000000;
+                        workSheet8.Cells["G" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n"].ToString()) / 1000000;
+                        workSheet8.Cells["H" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n1"].ToString()) / 1000000;
+                        workSheet8.Cells["I" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n1"].ToString()) / 1000000;
+                        workSheet8.Cells["J" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n1"].ToString()) / 1000000;
+                        workSheet8.Cells["K" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n2"].ToString()) / 1000000;
+                        workSheet8.Cells["L" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n2"].ToString()) / 1000000;
+                        workSheet8.Cells["M" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n2"].ToString()) / 1000000;
+                        workSheet8.Cells["N" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n3"].ToString()) / 1000000;
+                        workSheet8.Cells["O" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n3"].ToString()) / 1000000;
+                        workSheet8.Cells["P" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n3"].ToString()) / 1000000;
+                        workSheet8.Cells["Q" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_prev_month_n4"].ToString()) / 1000000;
+                        workSheet8.Cells["R" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_last_month_n4"].ToString()) / 1000000;
+                        workSheet8.Cells["S" + index.ToString()].Value = Convert.ToDouble(dsOEMSaleForecast.Tables[0].Rows[i]["i_amt_actual_month_n4"].ToString()) / 1000000;
+                    }
+                }
+
+                if (listReportSelected.Contains("Report 9"))
+                {
+                    //9.PMSP Monthly sales forecast
+                    var workSheet9 = workBook.Worksheets[9];
+                    for (int i = 0; i < dsPMSPSaleForecast.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet9.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m1"].ToString()) / 1000000;
+                        workSheet9.Cells["C" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m2"].ToString()) / 1000000;
+                        workSheet9.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m3"].ToString()) / 1000000;
+                        workSheet9.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m4"].ToString()) / 1000000;
+                        workSheet9.Cells["F" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m5"].ToString()) / 1000000;
+                        workSheet9.Cells["G" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m6"].ToString()) / 1000000;
+                        workSheet9.Cells["H" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m7"].ToString()) / 1000000;
+                        workSheet9.Cells["I" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m8"].ToString()) / 1000000;
+                        workSheet9.Cells["J" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m9"].ToString()) / 1000000;
+                        workSheet9.Cells["K" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m10"].ToString()) / 1000000;
+                        workSheet9.Cells["L" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m11"].ToString()) / 1000000;
+                        workSheet9.Cells["M" + (i + 2).ToString()].Value = Convert.ToDouble(dsPMSPSaleForecast.Tables[0].Rows[i]["m12"].ToString()) / 1000000;
+                    }
+                }
+
+                if (listReportSelected.Contains("Report 10"))
+                {
+                    //10.Accumulate Overall Forecast
+                    var workSheet10 = workBook.Worksheets[10];
+
+                    workSheet10.Cells["B1"].Value = sheet10ColumnBName;
+                    workSheet10.Cells["C1"].Value = sheet10ColumnCName;
+                    workSheet10.Cells["D1"].Value = sheet10ColumnDName;
+                    workSheet10.Cells["E1"].Value = sheet10ColumnEName;
+
+                    workSheet10.Cells["B2"].Value = Convert.ToDouble(dsAccOverallOAP.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                    workSheet10.Cells["D2"].Value = Convert.ToDouble(dsAccOAPPrevYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                    workSheet10.Cells["E2"].Value = Convert.ToDouble(dsAccOAPThisYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                }
+
+                if (listReportSelected.Contains("Report 11"))
+                {
+                    //11.OEM Accumulate Forecast
+                    var workSheet11 = workBook.Worksheets[11];
+
+                    workSheet11.Cells["B1"].Value = sheet10ColumnBName;
+                    workSheet11.Cells["C1"].Value = sheet10ColumnCName;
+                    workSheet11.Cells["D1"].Value = sheet10ColumnDName;
+                    workSheet11.Cells["E1"].Value = sheet10ColumnEName;
+
+                    for (int i = 0; i < dsOEMAccOverallOAP.Tables[0].Rows.Count; i++)
+                    {
+                        workSheet11.Cells["B" + (i + 2).ToString()].Value = Convert.ToDouble(dsOEMAccOverallOAP.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet11.Cells["D" + (i + 2).ToString()].Value = Convert.ToDouble(dsOEMAccOAPPrevYear.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                        workSheet11.Cells["E" + (i + 2).ToString()].Value = Convert.ToDouble(dsOEMAccOAPThisYear.Tables[0].Rows[i]["i_amt"].ToString()) / 1000000;
+                    }
+                }
+
+                if (listReportSelected.Contains("Report 12"))
+                {
+                    //12.PMSP Accumulate Forecast
+                    var workSheet12 = workBook.Worksheets[12];
+
+                    workSheet12.Cells["B1"].Value = sheet12ColumnBName;
+                    workSheet12.Cells["C1"].Value = sheet12ColumnCName;
+                    workSheet12.Cells["D1"].Value = sheet12ColumnDName;
+                    workSheet12.Cells["E1"].Value = sheet12ColumnEName;
+
+                    workSheet12.Cells["B2"].Value = Convert.ToDouble(dsPMSPAccOverallOAP.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                    workSheet12.Cells["D2"].Value = Convert.ToDouble(dsPMSPAccOAPPrevYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                    workSheet12.Cells["E2"].Value = Convert.ToDouble(dsPMSPAccOAPThisYear.Tables[0].Rows[0]["i_amt"].ToString()) / 1000000;
+                }
                 // SAVE EXCEL
                 string monthStr = dtpYearMonth.Value.ToString("yyyyMM");
                 SAVE_PATH = pathDesktop + "\\" + fileNameExcelExport + "_" + monthStr + "-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".xlsx";
                 package.SaveAs(new FileInfo(SAVE_PATH));
+            }
+        }
+
+        private void lblSelectAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            for (int i = 0; i < clbReport.Items.Count; i++)
+            {
+                clbReport.SetItemChecked(i, true);
+            }
+        }
+
+        private void lblUnSelectAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            for (int i = 0; i < clbReport.Items.Count; i++)
+            {
+                clbReport.SetItemChecked(i, false);
             }
         }
     }

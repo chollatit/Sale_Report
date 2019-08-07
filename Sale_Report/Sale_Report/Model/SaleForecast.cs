@@ -122,6 +122,12 @@ namespace Sale_Report.Model
                     strCmd += "FROM t_is_sale_shipto_ms tc ";
                     strCmd += "WHERE tc.i_group_desc = 'PMSP')";
                 }
+                else if (type == "OEM")
+                {
+                    strCmd += "AND ta.i_dl_cd IN (SELECT tc.i_shipto_cd ";
+                    strCmd += "FROM t_is_sale_shipto_ms tc ";
+                    strCmd += "WHERE tc.i_group_desc = 'OEM' OR tc.i_group_desc = 'OTHER')";
+                }
 
                 DataSet ds = obj.oracle.libOracle.GetData(strCmd);
                 return ds;
