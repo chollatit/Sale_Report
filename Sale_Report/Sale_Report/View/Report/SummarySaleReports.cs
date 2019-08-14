@@ -170,7 +170,54 @@ namespace Sale_Report.View.Report
 
             if (flgSearchComplete)
             {
-                dgvSearchResult.DataSource = dsOverallActualThisMonth.Tables[0];
+                if (dsOverallActualThisMonth.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsOverallActualThisMonth.Tables[0];
+                }
+                else if (dsProjOEMActualThisMonth.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsProjOEMActualThisMonth.Tables[0];
+                }
+                else if (dsProjPMSPActualThisMonth.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsProjPMSPActualThisMonth.Tables[0];
+                }
+                else if (dsOverallYearOAP.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsOverallYearOAP.Tables[0];
+                }
+                else if (dsProjOEMYearOAP.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsProjOEMYearOAP.Tables[0];
+                }
+                else if (dsProjPMSPYearOAP.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsProjPMSPYearOAP.Tables[0];
+                }
+                else if (dsOverallSaleForecat.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsOverallSaleForecat.Tables[0];
+                }
+                else if (dsOEMSaleForecast.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsOEMSaleForecast.Tables[0];
+                }
+                else if (dsPMSPSaleForecast.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsPMSPSaleForecast.Tables[0];
+                }
+                else if (dsAccOverallOAP.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsAccOverallOAP.Tables[0];
+                }
+                else if (dsOEMAccOverallOAP.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsOEMAccOverallOAP.Tables[0];
+                }
+                else if (dsPMSPAccOverallOAP.Tables.Count > 0)
+                {
+                    dgvSearchResult.DataSource = dsPMSPAccOverallOAP.Tables[0];
+                }
             }
             else
             {
